@@ -1,6 +1,10 @@
 import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 
+/**
+ * Blocks ghost players from accessing vote/werewolf routes.
+ * Redirects to /home with a message.
+ */
 export function GhostGuard({ children }: { children: React.ReactNode }) {
   const { player, isLoading } = useAuthStore()
 
@@ -17,7 +21,17 @@ export function GhostGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (player.status === 'ghost') {
-    return <Navigate to="/home" replace />
+    return (
+      <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6 ghost-mode">
+        <div className="text-5xl mb-4 opacity-60">👻</div>
+        <p className="font-cinzel text-moon-400/60 text-xl text-center tracking-wide">
+          Les morts observent, mais ne parlent pas.
+        </p>
+        <a href="/home" className="mt-6 font-crimson text-candle-400/60 hover:text-candle-400 transition-colors underline">
+          Retour au village
+        </a>
+      </div>
+    )
   }
 
   return <>{children}</>

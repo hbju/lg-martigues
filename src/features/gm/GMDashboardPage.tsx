@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { useGameStore } from '../../stores/gameStore'
 import { useAuthStore } from '../../stores/authStore'
+import { useNotificationStore } from '../../stores/notificationStore'
+import { NotificationBell } from '../../components/ui/NotificationBell'
 
 export function GMDashboardPage() {
   const { players } = useRealtimePlayers()
@@ -12,7 +14,8 @@ export function GMDashboardPage() {
   const [meetingPoint, setMeetingPoint] = useState('')
   const [isAssigning, setIsAssigning] = useState(false)
   const [showRoles, setShowRoles] = useState(false)
-  const { logout } = useAuthStore()
+  const { player: gmPlayer, logout } = useAuthStore()
+  const { subscribe: subscribeNotifs } = useNotificationStore()
 
   useEffect(() => {
     fetchGameState()
@@ -20,29 +23,36 @@ export function GMDashboardPage() {
     return unsub
   }, [])
 
+  useEffect(() => {
+    if (!gmPlayer) return
+    const unsub = subscribeNotifs(gmPlayer.id)
+    return unsub
+  }, [gmPlayer?.id])
+
   const alivePlayers = players.filter(p => p.status !== undefined)
-  const canStart = alivePlayers.length >= 4 // minimum for a game
+  const canStart = alivePlayers.length >= 4
+
+  const metadata = (gameState?.metadata ?? {}) as Record<string, unknown>
+  const discoveryConfirmed = metadata.werewolf_discovery_confirmed === true
+  const infectionPending = metadata.infection_pending === true
 
   async function handleAssignRoles() {
     if (!confirm(`Assigner les rôles ? (${werewolfCount} loups-garous)`)) return
 
     setIsAssigning(true)
 
-    // Shuffle players (Fisher-Yates)
     const shuffled = [...players.filter(p => !p.is_gm)]
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
         ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
 
-    // Assign roles
     const updates = shuffled.map((player, index) => ({
       id: player.id,
       role: index < werewolfCount ? 'werewolf' as const : 'villager' as const,
       status: 'alive' as const,
     }))
 
-    // Update each player
     for (const update of updates) {
       await supabase
         .from('players')
@@ -50,7 +60,6 @@ export function GMDashboardPage() {
         .eq('id', update.id)
     }
 
-    // Update game state
     await supabase
       .from('game_state')
       .update({
@@ -62,6 +71,15 @@ export function GMDashboardPage() {
       })
       .eq('id', 1)
 
+    // Send role assignment notifications
+    const notifs = shuffled.map(p => ({
+      player_id: p.id,
+      type: 'role_assigned' as const,
+      title: 'Rôle assigné',
+      message: 'Ton rôle a été attribué. Consulte-le maintenant !',
+    }))
+    await supabase.from('notifications').insert(notifs)
+
     setIsAssigning(false)
     setShowRoles(true)
   }
@@ -70,6 +88,18 @@ export function GMDashboardPage() {
     await supabase
       .from('game_state')
       .update({ phase: 'playing', updated_at: new Date().toISOString() })
+      .eq('id', 1)
+  }
+
+  async function handleToggleWerewolfDiscovery() {
+    if (!gameState) return
+    const newVal = !discoveryConfirmed
+    await supabase
+      .from('game_state')
+      .update({
+        metadata: { ...(gameState.metadata ?? {}), werewolf_discovery_confirmed: newVal },
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', 1)
   }
 
@@ -88,12 +118,15 @@ export function GMDashboardPage() {
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
             Maître du Jeu
           </h1>
-          <Link
-            to="/gm/qr-codes"
-            className="bg-night-700 hover:bg-night-600 text-parchment-200 py-2 px-4 rounded-lg transition-colors font-crimson border border-night-600"
-          >
-            📱 QR Codes
-          </Link>
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+            <Link
+              to="/gm/qr-codes"
+              className="bg-night-700 hover:bg-night-600 text-parchment-200 py-2 px-4 rounded-lg transition-colors font-crimson border border-night-600"
+            >
+              📱 QR Codes
+            </Link>
+          </div>
         </div>
 
         {/* Game phase */}
@@ -103,6 +136,70 @@ export function GMDashboardPage() {
             {gameState ? phaseLabels[gameState.phase] || gameState.phase : 'Chargement...'}
           </p>
         </div>
+
+        {/* Action buttons — only visible during playing phase */}
+        {(gameState?.phase === 'playing' || gameState?.phase === 'final_vote') && (
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <Link
+              to="/gm/votes"
+              className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 text-center hover:bg-candle-600/30 transition-colors"
+            >
+              <div className="text-2xl mb-1">🗳️</div>
+              <p className="font-cinzel text-candle-400 text-sm font-semibold">Votes</p>
+            </Link>
+            <Link
+              to="/gm/murder"
+              className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-4 text-center hover:bg-blood-800/30 transition-colors"
+            >
+              <div className="text-2xl mb-1">🐺</div>
+              <p className="font-cinzel text-red-400 text-sm font-semibold">Meurtres</p>
+            </Link>
+            <Link
+              to="/gm/infection"
+              className={`border rounded-xl p-4 text-center transition-colors ${
+                infectionPending
+                  ? 'bg-blood-800/30 border-blood-500/50 animate-pulse'
+                  : 'bg-night-800/30 border-night-700/30 hover:bg-night-800/40'
+              }`}
+            >
+              <div className="text-2xl mb-1">🦠</div>
+              <p className={`font-cinzel text-sm font-semibold ${infectionPending ? 'text-red-400' : 'text-moon-400'}`}>
+                Infection {infectionPending && '⚠️'}
+              </p>
+            </Link>
+            <Link
+              to="/gm/broadcast"
+              className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
+            >
+              <div className="text-2xl mb-1">📢</div>
+              <p className="font-cinzel text-moon-400 text-sm font-semibold">Annonce</p>
+            </Link>
+          </div>
+        )}
+
+        {/* Werewolf discovery toggle */}
+        {gameState?.phase === 'playing' && (
+          <div className="bg-blood-800/10 border border-blood-500/20 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-cinzel text-red-400/80 text-sm font-semibold">Découverte des loups</p>
+                <p className="font-crimson text-moon-400/60 text-xs">
+                  {discoveryConfirmed ? 'Les loups peuvent se coordonner' : 'Les loups ne voient pas encore leurs alliés'}
+                </p>
+              </div>
+              <button
+                onClick={handleToggleWerewolfDiscovery}
+                className={`px-4 py-2 rounded-lg font-crimson text-sm transition-colors border ${
+                  discoveryConfirmed
+                    ? 'bg-blood-500/20 border-blood-500/40 text-red-400'
+                    : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
+                }`}
+              >
+                {discoveryConfirmed ? '✅ Confirmée' : 'Confirmer'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Player list */}
         <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">

@@ -131,7 +131,7 @@ export function LoginPage() {
 
       {showScanner && (
         <div className="w-full max-w-sm relative z-10">
-          <div id="qr-reader" className="rounded-lg overflow-hidden border border-night-600" />
+          <div id="qr-reader" className="rounded-lg overflow-hidden border border-night-600 center" />
           <button
             onClick={() => setShowScanner(false)}
             className="mt-4 w-full text-moon-400 hover:text-parchment-100 py-2 transition-colors font-crimson"

@@ -113,3 +113,16 @@ body {
   background: var(--color-night-600);
   border-radius: 3px;
 }
+
+/* Ghost mode — desaturated, semi-transparent */
+.ghost-mode {
+  filter: saturate(0.3) brightness(0.85);
+}
+.ghost-mode::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 26, 0.25);
+  pointer-events: none;
+  z-index: 1;
+}
