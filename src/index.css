@@ -1,0 +1,115 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+
+@theme {
+  --color-night-950: #0a0c1a;
+  --color-night-900: #0f1225;
+  --color-night-800: #161a35;
+  --color-night-700: #1e2347;
+  --color-night-600: #2a305c;
+  --color-parchment-50: #faf5eb;
+  --color-parchment-100: #f0e6d0;
+  --color-parchment-200: #e2d2b4;
+  --color-parchment-300: #c9b48e;
+  --color-candle-400: #e8a840;
+  --color-candle-500: #d4912a;
+  --color-candle-600: #b87420;
+  --color-blood-500: #8b1a1a;
+  --color-blood-600: #6e1111;
+  --color-blood-700: #4a0b0b;
+  --color-blood-800: #300808;
+  --color-blood-900: #1f0505;
+  --color-moon-200: #e8e4d9;
+  --color-moon-300: #c9c3b0;
+  --color-moon-400: #a89e88;
+  --color-forest-700: #1a3a1a;
+  --color-forest-800: #102810;
+  --color-forest-900: #0a1a0a;
+
+  --font-medieval: 'MedievalSharp', cursive;
+  --font-cinzel: 'Cinzel', serif;
+  --font-crimson: 'Crimson Text', serif;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-crimson);
+  background-color: var(--color-night-950);
+  color: var(--color-parchment-100);
+}
+
+/* Reusable background textures */
+.bg-village-night {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(42, 48, 92, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 10%, rgba(30, 35, 71, 0.4) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 100%, rgba(26, 58, 26, 0.3) 0%, transparent 40%),
+    var(--color-night-950);
+}
+
+.bg-parchment-card {
+  background:
+    linear-gradient(135deg, rgba(240, 230, 208, 0.08) 0%, rgba(194, 180, 142, 0.04) 100%);
+  border: 1px solid rgba(201, 180, 142, 0.15);
+}
+
+/* Moon glow effect */
+.moon-glow {
+  box-shadow:
+    0 0 60px rgba(232, 228, 217, 0.08),
+    0 0 120px rgba(232, 228, 217, 0.04);
+}
+
+/* Candle flicker animation */
+@keyframes candle-flicker {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.85; }
+  50% { opacity: 0.95; }
+  75% { opacity: 0.8; }
+}
+.animate-candle {
+  animation: candle-flicker 3s ease-in-out infinite;
+}
+
+/* Slow pulse for atmospheric elements */
+@keyframes slow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-slow-pulse {
+  animation: slow-pulse 4s ease-in-out infinite;
+}
+
+/* Fade in for role reveal */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out forwards;
+}
+
+/* Stars twinkling */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-night-900);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-night-600);
+  border-radius: 3px;
+}
