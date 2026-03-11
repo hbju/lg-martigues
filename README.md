@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# 🐺 Les Loups-Garous de Martigues
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web temps réel pour jouer aux Loups-Garous en soirée — inspirée des Loups-Garous de Thiercelieux.
 
-Currently, two official plugins are available:
+Chaque joueur utilise son téléphone comme carte de jeu. Le Maître du Jeu (MJ) orchestre la partie depuis un dashboard dédié.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fonctionnalités
 
-## React Compiler
+- **QR Code Login** — Chaque joueur scanne un QR code unique pour rejoindre la partie
+- **Lobby temps réel** — Les joueurs voient en direct qui est connecté (Supabase Realtime)
+- **Attribution des rôles** — Le MJ assigne aléatoirement Loups-Garous et Villageois
+- **Révélation dramatique** — Animation immersive de révélation du rôle avec point de rendez-vous secret pour les loups
+- **Dashboard joueur** — Rôle, boucliers, clairvoyances, état de la partie
+- **Dashboard MJ** — Gestion des joueurs, contrôle du jeu, génération/impression de QR codes
+- **PWA** — Installable sur Android et iOS, fonctionne en mode standalone
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack technique
 
-## Expanding the ESLint configuration
+| Couche | Technologie |
+|--------|-------------|
+| Frontend | React 19, TypeScript, Vite |
+| Styling | Tailwind CSS 4 |
+| State | Zustand |
+| Routing | React Router 7 |
+| Backend | Supabase (PostgreSQL, Realtime, RLS) |
+| QR | html5-qrcode (scan), qrcode.react (génération) |
+| PWA | vite-plugin-pwa |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Démarrage rapide
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Installer les dépendances
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Lancer en local
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Créer un fichier `.env.local` à la racine :
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_SUPABASE_URL=https://xxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=xxxxx
 ```
+
+## Base de données
+
+Les migrations SQL se trouvent dans `supabase/migrations/` :
+
+1. `001_players.sql` — Table `players` avec RLS
+2. `002_game_state.sql` — Table `game_state` (singleton) avec RLS
+3. `003_enable_realtime.sql` — Active le Realtime sur les deux tables
+
+Données de test : `supabase/seed.sql` (16 joueurs + 1 MJ)
+
+## Structure du projet
+
+```
+src/
+├── components/layout/     # Guards (PlayerGuard, GMGuard, GhostGuard)
+├── features/
+│   ├── auth/              # LoginPage (QR scan)
+│   ├── game/              # LobbyPage, RoleRevealPage, HomePage
+│   └── gm/               # GMDashboardPage, GMQRCodesPage
+├── hooks/                 # useRealtimePlayers
+├── lib/                   # Client Supabase
+├── stores/                # authStore, gameStore (Zustand)
+└── types/                 # Types TypeScript + Database
+```
+
+## Routes
+
+| Route | Accès | Description |
+|-------|-------|-------------|
+| `/login` | Public | Scan QR / authentification par token |
+| `/lobby` | Joueur | Salle d'attente temps réel |
+| `/reveal` | Joueur | Révélation du rôle |
+| `/home` | Joueur | Dashboard personnel |
+| `/gm` | MJ | Dashboard Maître du Jeu |
+| `/gm/qr-codes` | MJ | Génération et impression des QR codes |
+
+## Direction artistique
+
+Thème inspiré des Loups-Garous de Thiercelieux :
+
+- **Palette** — Ciel nocturne indigo, parchemin crème, lueur de bougie ambrée, rouge sang, clair de lune argenté
+- **Typographies** — Cinzel (titres médiévaux), Crimson Text (corps), MedievalSharp (accents)
+- **Ambiance** — Étoiles scintillantes, lune pâle, animation de flamme de bougie, cartes style parchemin
