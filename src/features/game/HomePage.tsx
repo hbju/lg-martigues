@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useGameStore } from '../../stores/gameStore'
 import { useVoteStore } from '../../stores/voteStore'
 import { useNotificationStore } from '../../stores/notificationStore'
 import { NotificationBell } from '../../components/ui/NotificationBell'
 import { EliminationOverlay } from '../../components/ui/EliminationOverlay'
+import { useChallengeStore } from '../../stores/challengeStore'
+import { usePowerUpStore } from '../../stores/powerUpStore'
 
 export function HomePage() {
   const { player, logout, refreshPlayer } = useAuthStore()
   const { gameState, fetchGameState, subscribeToGameState } = useGameStore()
   const { currentRound, subscribeToRounds } = useVoteStore()
   const { subscribe: subscribeNotifs } = useNotificationStore()
+  const { challenges, subscribeToAll } = useChallengeStore()
   const navigate = useNavigate()
   const [showElimination, setShowElimination] = useState(false)
   const [eliminationMethod] = useState<'council' | 'werewolf'>('council')
@@ -47,12 +50,24 @@ export function HomePage() {
     setPrevStatus(player.status)
   }, [player?.status])
 
-  // Redirect to vote screen when a council round opens
+  // Redirect to vote screen when a council/final round opens
   useEffect(() => {
-    if (currentRound?.type === 'council' && currentRound.status === 'open' && player?.status === 'alive') {
+    if (!currentRound || !player || player.status !== 'alive') return
+    if (currentRound.status !== 'open') return
+
+    if (currentRound.metadata?.subtype === 'continue_poll') {
+      navigate('/vote/continue', { replace: true })
+    } else if ((currentRound.type === 'council' || currentRound.type === 'final') && currentRound.status === 'open') {
       navigate('/vote', { replace: true })
     }
   }, [currentRound?.id, currentRound?.status])
+
+  // Redirect to final reveal when game ends
+  useEffect(() => {
+    if (gameState?.phase === 'finished') {
+      navigate('/reveal/final', { replace: true })
+    }
+  }, [gameState?.phase])
 
   if (!player) return null
 
@@ -65,6 +80,16 @@ export function HomePage() {
     final_vote: 'Vote final',
     finished: 'Terminé',
   }
+
+  const beerPong = challenges.find(c => c.type === 'beer_pong')
+  const pubCrawl = challenges.find(c => c.type === 'pub_crawl')
+  const madScientists = challenges.find(c => c.type === 'mad_scientists')
+  console.log("Available challenges on HomePage:", { beerPong, pubCrawl, madScientists })
+
+  useEffect(() => {
+    const unsub = subscribeToAll()
+    return unsub
+  }, [])
 
   return (
     <div className={`min-h-screen bg-village-night p-6 ${isGhost ? 'ghost-mode' : ''}`}>
@@ -169,12 +194,59 @@ export function HomePage() {
           </div>
         )}
 
-        {/* Placeholder for next events */}
-        {!isGhost && (
-          <div className="bg-night-800/30 rounded-xl p-4 border border-night-700/30 border-dashed">
-            <p className="text-moon-400/40 text-center text-sm font-crimson italic">
-              🕐 Prochain événement à venir...
-            </p>
+        {/* Quick actions */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <Link
+            to="/inventory"
+            className="bg-parchment-card rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors backdrop-blur-sm"
+          >
+            <div className="text-2xl mb-1">🎒</div>
+            <p className="font-cinzel text-candle-400 text-sm font-semibold">Inventaire</p>
+            <p className="font-crimson text-moon-400/60 text-xs">Boucliers & Clairvoyances</p>
+          </Link>
+          <Link
+            to="/scan"
+            className="bg-parchment-card rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors backdrop-blur-sm"
+          >
+            <div className="text-2xl mb-1">📷</div>
+            <p className="font-cinzel text-candle-400 text-sm font-semibold">Scanner QR</p>
+            <p className="font-crimson text-moon-400/60 text-xs">Trouver des récompenses</p>
+          </Link>
+        </div>
+
+        {/* Challenges */}
+        {challenges.length > 0 && (
+          <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
+            <h2 className="font-cinzel text-parchment-100 font-semibold mb-3 text-sm tracking-wider uppercase">
+              🏆 Challenges
+            </h2>
+            <div className="space-y-2">
+              {beerPong && (
+                <Link
+                  to="/challenges/beer-pong"
+                  className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
+                >
+                  <span className="text-lg">🍺</span>
+                  <span className="font-crimson text-parchment-200 text-sm">Beer Pong</span>
+                </Link>)}
+              {pubCrawl && (
+                <Link
+                  to="/challenges/pub-crawl"
+                  className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
+                >
+                  <span className="text-lg">🍻</span>
+                  <span className="font-crimson text-parchment-200 text-sm">Barathon</span>
+                </Link>)}
+              {madScientists && (
+                <Link
+                  to="/challenges/mad-scientists"
+                  className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
+                >
+                  <span className="text-lg">🧪</span>
+                  <span className="font-crimson text-parchment-200 text-sm">Savants Fous</span>
+                </Link>)}
+            </div>
+
           </div>
         )}
 

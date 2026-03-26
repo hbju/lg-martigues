@@ -58,6 +58,19 @@ export function GMMurderPage() {
     async function handleOpenMurder() {
         if (!player) return
         setIsCreating(true)
+
+        // Check for concurrent open rounds
+        const { data: openRounds } = await supabase
+            .from('vote_rounds')
+            .select('id')
+            .eq('status', 'open')
+
+        if (openRounds && openRounds.length > 0) {
+            alert('Un vote est déjà en cours. Ferme-le avant d\'en ouvrir un nouveau.')
+            setIsCreating(false)
+            return
+        }
+
         const now = new Date()
         const endAt = new Date(now.getTime() + timerMinutes * 60 * 1000)
 

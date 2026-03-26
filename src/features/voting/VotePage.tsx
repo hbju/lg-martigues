@@ -32,7 +32,7 @@ export function VotePage() {
     const progress = getVoteProgress(votes, alivePlayers, player.id)
 
     // No active round
-    if (!currentRound || currentRound.type !== 'council') {
+    if (!currentRound || (currentRound.type !== 'council' && currentRound.type !== 'final') || currentRound.metadata?.subtype === 'continue_poll') {
         return (
             <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
                 <div className="text-4xl mb-4">🗳️</div>
@@ -139,13 +139,13 @@ export function VotePage() {
                             key={p.id}
                             onClick={() => setSelectedTarget(p.id)}
                             className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all border ${selectedTarget === p.id
-                                    ? 'bg-blood-800/40 border-blood-500/50 shadow-lg shadow-blood-900/20'
-                                    : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
+                                ? 'bg-blood-800/40 border-blood-500/50 shadow-lg shadow-blood-900/20'
+                                : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
                                 }`}
                         >
                             <div className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${selectedTarget === p.id
-                                    ? 'border-blood-500 bg-blood-500'
-                                    : 'border-moon-400/50'
+                                ? 'border-blood-500 bg-blood-500'
+                                : 'border-moon-400/50'
                                 }`} />
                             <span className="font-crimson text-parchment-200">{p.name}</span>
                         </button>

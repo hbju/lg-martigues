@@ -9,7 +9,7 @@ import type { VoteRound, Vote, Elimination } from '../../types/supabase'
 
 export function GMVotesPage() {
     const { player } = useAuthStore()
-    const { gameState } = useGameStore()
+    const { gameState, fetchGameState, subscribeToGameState } = useGameStore()
     const { currentRound, votes, subscribeToRounds, subscribeToVotes } = useVoteStore()
     const { players } = useRealtimePlayers()
     const [timerMinutes, setTimerMinutes] = useState(15)
@@ -23,6 +23,12 @@ export function GMVotesPage() {
 
     useEffect(() => {
         const unsub = subscribeToRounds()
+        return unsub
+    }, [])
+
+    useEffect(() => {
+        fetchGameState()
+        const unsub = subscribeToGameState()
         return unsub
     }, [])
 
@@ -77,6 +83,19 @@ export function GMVotesPage() {
     async function handleOpenVote() {
         if (!player) return
         setIsCreating(true)
+
+        // Check for concurrent open rounds
+        const { data: openRounds } = await supabase
+            .from('vote_rounds')
+            .select('id')
+            .eq('status', 'open')
+
+        if (openRounds && openRounds.length > 0) {
+            alert('Un vote est déjà en cours. Ferme-le avant d\'en ouvrir un nouveau.')
+            setIsCreating(false)
+            return
+        }
+
         const now = new Date()
         const endAt = new Date(now.getTime() + timerMinutes * 60 * 1000)
 
@@ -276,6 +295,214 @@ export function GMVotesPage() {
         setIsConfirming(false)
     }
 
+    // ─── FINAL VOTE FUNCTIONS ───
+
+    const isFinalVote = gameState?.phase === 'final_vote' || gameState?.is_final_vote
+
+    async function handleEnterFinalVote() {
+        if (!confirm('Entrer en mode Vote Final ? (6 joueurs restants)')) return
+        await supabase.from('game_state').update({
+            phase: 'final_vote',
+            is_final_vote: true,
+            updated_at: new Date().toISOString(),
+        }).eq('id', 1)
+
+        // Notify all players
+        const notifs = alivePlayers.map(p => ({
+            player_id: p.id,
+            type: 'final_vote_start' as const,
+            title: 'Vote Final',
+            message: 'Le Vote Final commence ! Éliminez les derniers suspects.',
+        }))
+        await supabase.from('notifications').insert(notifs)
+    }
+
+    async function handleOpenFinalVote() {
+        if (!player) return
+        setIsCreating(true)
+        // Check for concurrent open rounds
+        const { data: openRounds } = await supabase
+            .from('vote_rounds')
+            .select('id')
+            .eq('status', 'open')
+
+        if (openRounds && openRounds.length > 0) {
+            alert('Un vote est déjà en cours. Ferme-le avant d\'en ouvrir un nouveau.')
+            setIsCreating(false)
+            return
+        }
+
+        const now = new Date()
+        const endAt = new Date(now.getTime() + timerMinutes * 60 * 1000)
+
+        const { data: round } = await supabase
+            .from('vote_rounds')
+            .insert({
+                type: 'final' as const,
+                status: 'open' as const,
+                timer_duration_seconds: timerMinutes * 60,
+                timer_started_at: now.toISOString(),
+                timer_end_at: endAt.toISOString(),
+                created_by: player.id,
+            })
+            .select()
+            .single<VoteRound>()
+
+        if (round) {
+            const notifs = alivePlayers.map(p => ({
+                player_id: p.id,
+                type: 'vote_open' as const,
+                title: 'Vote Final',
+                message: `Un vote final a été ouvert ! Tu as ${timerMinutes} minutes.`,
+            }))
+            await supabase.from('notifications').insert(notifs)
+        }
+
+        setTimerExpired(false)
+        setIsCreating(false)
+    }
+
+    async function handleOpenContinuePoll() {
+        if (!player) return
+        setIsCreating(true)
+
+        // Check for concurrent open rounds
+        const { data: openRounds } = await supabase
+            .from('vote_rounds')
+            .select('id')
+            .eq('status', 'open')
+
+        if (openRounds && openRounds.length > 0) {
+            alert('Un vote est déjà en cours. Ferme-le avant d\'en ouvrir un nouveau.')
+            setIsCreating(false)
+            return
+        }
+
+        const now = new Date()
+        const endAt = new Date(now.getTime() + 2 * 60 * 1000) // 2 minutes
+
+        await supabase.from('vote_rounds').insert({
+            type: 'final' as const,
+            status: 'open' as const,
+            timer_duration_seconds: 120,
+            timer_started_at: now.toISOString(),
+            timer_end_at: endAt.toISOString(),
+            created_by: player.id,
+            metadata: { subtype: 'continue_poll' },
+        })
+
+        const notifs = alivePlayers.map(p => ({
+            player_id: p.id,
+            type: 'continue_poll' as const,
+            title: 'Continuer ou arrêter ?',
+            message: 'Votez : pensez-vous qu\'il reste des loups parmi vous ?',
+        }))
+        await supabase.from('notifications').insert(notifs)
+        setIsCreating(false)
+    }
+
+    async function handleResolveContinuePoll() {
+        if (!currentRound) return
+        setIsResolving(true)
+
+        // Fetch all votes for this poll
+        const { data: pollVotes } = await supabase
+            .from('votes')
+            .select('*')
+            .eq('round_id', currentRound.id)
+
+        const allVotes = (pollVotes ?? []) as (Vote & { metadata?: Record<string, unknown> })[]
+
+        // Count choices
+        let continueCount = 0
+        let stopCount = 0
+        for (const v of allVotes) {
+            const choice = (v as unknown as { metadata?: { choice?: string } }).metadata?.choice
+            if (choice === 'continue') continueCount++
+            else if (choice === 'stop') stopCount++
+        }
+
+        // Mark round resolved
+        await supabase.from('vote_rounds').update({
+            status: 'resolved',
+            resolved_at: new Date().toISOString(),
+            metadata: { ...currentRound.metadata, result: continueCount > stopCount ? 'continue' : 'stop', continue_count: continueCount, stop_count: stopCount },
+        }).eq('id', currentRound.id)
+
+        if (continueCount <= stopCount) {
+            // Group decided to stop → trigger final reveal
+            await handleTriggerFinalReveal()
+        }
+
+        setIsResolving(false)
+        fetchLatestResolved()
+    }
+
+    async function handleTriggerFinalReveal() {
+        // Determine winner
+        const wolves = players.filter(p => p.role === 'werewolf' && p.status === 'alive')
+        const winner = wolves.length > 0 ? 'werewolves' : 'villagers'
+        const survivors = players.filter(p => p.status === 'alive' && !p.is_gm).map(p => ({
+            id: p.id, name: p.name, role: p.role,
+        }))
+
+        const meta = (gameState?.metadata ?? {}) as Record<string, unknown>
+        await supabase.from('game_state').update({
+            phase: 'finished',
+            metadata: { ...meta, winner, survivors, tv_state: { scene: 'final_reveal' } },
+            updated_at: new Date().toISOString(),
+        }).eq('id', 1)
+
+        // Notify all players
+        const notifs = players.filter(p => !p.is_gm).map(p => ({
+            player_id: p.id,
+            type: 'game_over' as const,
+            title: 'Fin de la partie !',
+            message: winner === 'werewolves'
+                ? 'Les Loups-Garous ont gagné ! Découvre la révélation finale.'
+                : 'Les Villageois ont gagné ! Découvre la révélation finale.',
+        }))
+        await supabase.from('notifications').insert(notifs)
+    }
+
+    async function handleForceEndGame() {
+        if (!confirm('Terminer la partie maintenant ? Cette action est irréversible.')) return
+        await handleTriggerFinalReveal()
+    }
+
+    async function handleResetGame() {
+        if (!confirm('RÉINITIALISER toute la partie ? Toutes les données seront effacées.')) return
+        if (!confirm('Es-tu VRAIMENT sûr ? Dernière chance...')) return
+
+        // Reset all players to pending
+        await supabase.from('players').update({
+            role: null,
+            status: 'pending',
+            shields: 0,
+            clairvoyance_count: 0,
+        }).neq('is_gm', true)
+
+        // Reset game state
+        await supabase.from('game_state').update({
+            phase: 'setup',
+            current_round: 0,
+            is_final_vote: false,
+            werewolf_count: 3,
+            villager_count: 13,
+            metadata: null,
+            updated_at: new Date().toISOString(),
+        }).eq('id', 1)
+
+        // Delete all vote rounds, votes, eliminations, notifications, power-ups
+        await supabase.from('votes').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        await supabase.from('eliminations').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        await supabase.from('vote_rounds').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        await supabase.from('notifications').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        await supabase.from('power_ups').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+
+        alert('Partie réinitialisée !')
+    }
+
     function getPlayerName(id: string) {
         return players.find(p => p.id === id)?.name ?? 'Inconnu'
     }
@@ -292,7 +519,7 @@ export function GMVotesPage() {
                     <div className="bg-parchment-card rounded-xl p-5 mb-6 backdrop-blur-sm">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="font-cinzel text-candle-400 font-semibold tracking-wider uppercase text-sm">
-                                Vote en cours — {currentRound.type === 'council' ? 'Conseil' : 'Meurtre'}
+                                Vote en cours — {currentRound.type === 'final' ? 'Vote Final' : currentRound.type === 'council' ? 'Conseil' : 'Meurtre'}
                             </h2>
                             {currentRound.timer_end_at && (
                                 <CountdownTimer
@@ -358,6 +585,110 @@ export function GMVotesPage() {
                         >
                             {isCreating ? 'Ouverture...' : '🗳️ Ouvrir un vote du Conseil'}
                         </button>
+                    </div>
+                )}
+
+                {/* Final Vote mode prompt */}
+                {!isFinalVote && alivePlayers.length <= 6 && gameState?.phase === 'playing' && !currentRound?.status && (
+                    <div className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-5 mb-6 animate-pulse">
+                        <h2 className="font-cinzel text-red-400 font-semibold mb-3 tracking-wider uppercase text-sm">
+                            🗳️ Vote Final disponible
+                        </h2>
+                        <p className="font-crimson text-parchment-200 mb-4">
+                            Il ne reste que <span className="text-candle-400 font-semibold">{alivePlayers.length}</span> joueurs.
+                            Tu peux activer le mode Vote Final.
+                        </p>
+                        <button
+                            onClick={handleEnterFinalVote}
+                            className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
+                        >
+                            Activer le Vote Final
+                        </button>
+                    </div>
+                )}
+
+                {/* Final Vote controls */}
+                {isFinalVote && !currentRound?.status && (
+                    <div className="bg-blood-800/10 border border-blood-500/20 rounded-xl p-5 mb-6">
+                        <h2 className="font-cinzel text-red-400 font-semibold mb-4 tracking-wider uppercase text-sm">
+                            🗳️ Mode Vote Final
+                        </h2>
+                        <div className="mb-4">
+                            <label className="font-crimson text-moon-400 text-sm block mb-1">
+                                Durée du timer : <span className="text-candle-400 font-semibold">{timerMinutes} min</span>
+                            </label>
+                            <input
+                                type="range"
+                                min={1}
+                                max={15}
+                                value={timerMinutes}
+                                onChange={(e) => setTimerMinutes(Number(e.target.value))}
+                                className="w-full accent-candle-500"
+                            />
+                        </div>
+                        <div className="space-y-3">
+                            <button
+                                onClick={handleOpenFinalVote}
+                                disabled={isCreating}
+                                className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
+                            >
+                                {isCreating ? 'Ouverture...' : '🗳️ Ouvrir un vote final'}
+                            </button>
+                            <button
+                                onClick={handleOpenContinuePoll}
+                                disabled={isCreating}
+                                className="w-full bg-night-800 hover:bg-night-700 text-parchment-200 font-crimson py-3 rounded-lg transition-colors border border-night-600"
+                            >
+                                {isCreating ? 'Ouverture...' : '🔍 Sondage : Continuer ou Arrêter ?'}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Continue poll resolution */}
+                {currentRound?.status === 'open' && currentRound.metadata?.subtype === 'continue_poll' && (
+                    <div className="bg-parchment-card rounded-xl p-5 mb-6 backdrop-blur-sm">
+                        <h2 className="font-cinzel text-candle-400 font-semibold tracking-wider uppercase text-sm mb-4">
+                            Sondage en cours — Continuer ou Arrêter ?
+                        </h2>
+                        {currentRound.timer_end_at && (
+                            <div className="mb-4">
+                                <CountdownTimer
+                                    endTime={new Date(currentRound.timer_end_at)}
+                                    onExpire={() => setTimerExpired(true)}
+                                />
+                            </div>
+                        )}
+                        <button
+                            onClick={handleResolveContinuePoll}
+                            disabled={isResolving}
+                            className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all"
+                        >
+                            {isResolving ? 'Résolution...' : '🔒 Fermer le sondage et résoudre'}
+                        </button>
+                    </div>
+                )}
+
+                {/* GM Emergency controls */}
+                {gameState && gameState.phase !== 'setup' && (
+                    <div className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 mb-6">
+                        <h2 className="font-cinzel text-moon-400/60 font-semibold mb-3 tracking-wider uppercase text-xs">
+                            ⚠️ Actions d'urgence
+                        </h2>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={handleForceEndGame}
+                                className="bg-blood-800/30 hover:bg-blood-800/50 border border-blood-500/30 text-red-400 font-crimson py-2 px-3 rounded-lg transition-colors text-sm"
+                            >
+                                🏁 Fin de partie
+                            </button>
+                            <button
+                                onClick={handleResetGame}
+                                className="bg-blood-800/30 hover:bg-blood-800/50 border border-blood-500/30 text-red-400 font-crimson py-2 px-3 rounded-lg transition-colors text-sm"
+                            >
+                                🔄 Réinitialiser
+                            </button>
+                        </div>
                     </div>
                 )}
 

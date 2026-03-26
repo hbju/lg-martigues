@@ -126,3 +126,32 @@ body {
   pointer-events: none;
   z-index: 1;
 }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+.skeleton {
+  background: linear-gradient(to right, var(--color-night-800) 8%, var(--color-night-700) 18%, var(--color-night-800) 33%);
+  background-size: 936px 1px;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 0.5rem;
+}
+
+/* Progress ring */
+@keyframes countdown-ring {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 283; }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

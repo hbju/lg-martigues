@@ -6,6 +6,7 @@ import { useGameStore } from '../../stores/gameStore'
 import { useAuthStore } from '../../stores/authStore'
 import { useNotificationStore } from '../../stores/notificationStore'
 import { NotificationBell } from '../../components/ui/NotificationBell'
+import type { GameState, Player } from '../../types/supabase'
 
 export function GMDashboardPage() {
   const { players } = useRealtimePlayers()
@@ -30,7 +31,7 @@ export function GMDashboardPage() {
   }, [gmPlayer?.id])
 
   const alivePlayers = players.filter(p => p.status !== undefined)
-  const canStart = alivePlayers.length >= 4
+  const canStart = alivePlayers.length >= 3
 
   const metadata = (gameState?.metadata ?? {}) as Record<string, unknown>
   const discoveryConfirmed = metadata.werewolf_discovery_confirmed === true
@@ -156,11 +157,10 @@ export function GMDashboardPage() {
             </Link>
             <Link
               to="/gm/infection"
-              className={`border rounded-xl p-4 text-center transition-colors ${
-                infectionPending
-                  ? 'bg-blood-800/30 border-blood-500/50 animate-pulse'
-                  : 'bg-night-800/30 border-night-700/30 hover:bg-night-800/40'
-              }`}
+              className={`border rounded-xl p-4 text-center transition-colors ${infectionPending
+                ? 'bg-blood-800/30 border-blood-500/50 animate-pulse'
+                : 'bg-night-800/30 border-night-700/30 hover:bg-night-800/40'
+                }`}
             >
               <div className="text-2xl mb-1">🦠</div>
               <p className={`font-cinzel text-sm font-semibold ${infectionPending ? 'text-red-400' : 'text-moon-400'}`}>
@@ -177,6 +177,55 @@ export function GMDashboardPage() {
           </div>
         )}
 
+        {/* Sprint 3 — Management section */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <Link
+            to="/gm/power-ups"
+            className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 text-center hover:bg-purple-900/30 transition-colors"
+          >
+            <div className="text-2xl mb-1">🛡️</div>
+            <p className="font-cinzel text-purple-400 text-sm font-semibold">Power-ups</p>
+          </Link>
+          <Link
+            to="/gm/reward-qr"
+            className="bg-candle-600/10 border border-candle-500/20 rounded-xl p-4 text-center hover:bg-candle-600/20 transition-colors"
+          >
+            <div className="text-2xl mb-1">🎁</div>
+            <p className="font-cinzel text-candle-400 text-sm font-semibold">QR Rewards</p>
+          </Link>
+          <Link
+            to="/gm/challenges"
+            className="bg-forest-700/20 border border-green-800/30 rounded-xl p-4 text-center hover:bg-forest-700/30 transition-colors"
+          >
+            <div className="text-2xl mb-1">🏆</div>
+            <p className="font-cinzel text-green-400 text-sm font-semibold">Challenges</p>
+          </Link>
+          <Link
+            to="/tv"
+            className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
+          >
+            <div className="text-2xl mb-1">📺</div>
+            <p className="font-cinzel text-moon-400 text-sm font-semibold">TV View</p>
+          </Link>
+          <Link
+            to="/gm/checklist"
+            className="bg-forest-700/10 border border-green-800/20 rounded-xl p-4 text-center hover:bg-forest-700/20 transition-colors"
+          >
+            <div className="text-2xl mb-1">✅</div>
+            <p className="font-cinzel text-green-400 text-sm font-semibold">Checklist</p>
+          </Link>
+          <Link
+            to="/gm/health"
+            className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
+          >
+            <div className="text-2xl mb-1">🏥</div>
+            <p className="font-cinzel text-moon-400 text-sm font-semibold">Diagnostic</p>
+          </Link>
+        </div>
+
+        {/* TV Scene Control */}
+        <TVControl gameState={gameState} players={players} />
+
         {/* Werewolf discovery toggle */}
         {gameState?.phase === 'playing' && (
           <div className="bg-blood-800/10 border border-blood-500/20 rounded-xl p-4 mb-6">
@@ -189,11 +238,10 @@ export function GMDashboardPage() {
               </div>
               <button
                 onClick={handleToggleWerewolfDiscovery}
-                className={`px-4 py-2 rounded-lg font-crimson text-sm transition-colors border ${
-                  discoveryConfirmed
-                    ? 'bg-blood-500/20 border-blood-500/40 text-red-400'
-                    : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
-                }`}
+                className={`px-4 py-2 rounded-lg font-crimson text-sm transition-colors border ${discoveryConfirmed
+                  ? 'bg-blood-500/20 border-blood-500/40 text-red-400'
+                  : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
+                  }`}
               >
                 {discoveryConfirmed ? '✅ Confirmée' : 'Confirmer'}
               </button>
@@ -309,6 +357,118 @@ export function GMDashboardPage() {
           className="mt-8 w-full text-moon-400/40 hover:text-parchment-200 text-sm py-2 transition-colors font-crimson"
         >
           Se déconnecter
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── TV Scene Control ───
+
+function TVControl({ gameState, players }: { gameState: GameState | null; players: Player[] }) {
+  const [customMessage, setCustomMessage] = useState('')
+
+  async function setTVScene(scene: string, data?: Record<string, unknown>) {
+    if (!gameState) return
+    const meta = (gameState.metadata ?? {}) as Record<string, unknown>
+    await supabase
+      .from('game_state')
+      .update({
+        metadata: { ...meta, tv_state: { scene, data } },
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', 1)
+  }
+
+  async function handleMurderAnnouncement() {
+    const name = prompt('Nom de la victime :')
+    if (!name) return
+    await setTVScene('murder', { victim_name: name })
+  }
+
+  async function handleLeaderboard() {
+    // Fetch latest challenge scores for a quick leaderboard
+    const { data: scores } = await supabase
+      .from('challenge_scores')
+      .select('player_id, score')
+      .order('score', { ascending: false })
+      .limit(20)
+
+    if (!scores?.length) {
+      alert('Aucun score disponible.')
+      return
+    }
+
+    // Group by player, sum scores
+    const totals = new Map<string, number>()
+    scores.forEach((s: { player_id: string | null; score: number }) => {
+      if (!s.player_id) return
+      totals.set(s.player_id, (totals.get(s.player_id) ?? 0) + s.score)
+    })
+
+    const entries = Array.from(totals.entries())
+      .map(([pid, score]) => ({
+        name: players.find(p => p.id === pid)?.name ?? 'Inconnu',
+        score,
+      }))
+      .sort((a, b) => b.score - a.score)
+
+    await setTVScene('leaderboard', { title: 'Classement Challenges', entries })
+  }
+
+  async function handleCustomMessage() {
+    if (!customMessage.trim()) return
+    await setTVScene('custom_message', { message: customMessage.trim() })
+    setCustomMessage('')
+  }
+
+  return (
+    <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
+      <h2 className="font-cinzel text-parchment-100 font-semibold mb-3 text-sm tracking-wider uppercase">
+        📺 Contrôle TV
+      </h2>
+
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <button
+          onClick={() => setTVScene('idle')}
+          className="bg-night-800/50 border border-night-700/30 rounded-lg py-2 px-3 text-sm font-crimson text-parchment-200 hover:bg-night-800/70 transition-colors"
+        >
+          🌙 Écran veille
+        </button>
+        <button
+          onClick={handleMurderAnnouncement}
+          className="bg-blood-800/30 border border-blood-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-red-300 hover:bg-blood-800/40 transition-colors"
+        >
+          💀 Annonce meurtre
+        </button>
+        <button
+          onClick={handleLeaderboard}
+          className="bg-candle-600/20 border border-candle-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-candle-400 hover:bg-candle-600/30 transition-colors"
+        >
+          🏆 Classement
+        </button>
+        <button
+          onClick={() => setTVScene('final_reveal')}
+          className="bg-purple-900/30 border border-purple-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-purple-300 hover:bg-purple-900/40 transition-colors"
+        >
+          🎭 Révélation finale
+        </button>
+      </div>
+
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={customMessage}
+          onChange={e => setCustomMessage(e.target.value)}
+          placeholder="Message personnalisé..."
+          className="flex-1 bg-night-800 text-parchment-200 rounded-lg px-3 py-2 border border-night-600 focus:border-candle-500 focus:outline-none font-crimson text-sm placeholder:text-night-600"
+        />
+        <button
+          onClick={handleCustomMessage}
+          disabled={!customMessage.trim()}
+          className="bg-candle-600/20 border border-candle-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-candle-400 hover:bg-candle-600/30 transition-colors disabled:opacity-40"
+        >
+          📢
         </button>
       </div>
     </div>
