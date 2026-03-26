@@ -21,15 +21,13 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const playerId = session?.user?.id ?? null
-      supabase.from('error_logs').insert({
-        player_id: playerId,
-        error_message: error.message,
-        error_stack: error.stack ?? errorInfo.componentStack ?? null,
-        url: window.location.href,
-      }).then(() => {/* fire and forget */ })
-    })
+    const playerId = localStorage.getItem('lg_player_id')
+    supabase.from('error_logs').insert({
+      player_id: playerId,
+      error_message: error.message,
+      error_stack: error.stack ?? errorInfo.componentStack ?? null,
+      url: window.location.href,
+    }).then(() => {/* fire and forget */ })
   }
 
   handleReload = () => {

@@ -7,69 +7,49 @@ interface AuthState {
     isGM: boolean
     isLoading: boolean
     login: (token: string) => Promise<{ success: boolean; error?: string }>
-    logout: () => Promise<void>
+    logout: () => void
     refreshPlayer: () => Promise<void>
     restoreSession: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
     player: null,
     isGM: false,
     isLoading: true,
 
     login: async (token: string) => {
-        try {
-            // 1. Call RPC to provision auth user and get email
-            const { data: rpcData, error: rpcError } = await supabase
-                .rpc('login_with_token', { p_token: token })
+        const { data, error } = await supabase
+            .from('players')
+            .select('*')
+            .eq('auth_token', token)
+            .single<Player>()
 
-            if (rpcError || !rpcData) {
-                return { success: false, error: 'QR code invalide. Demande un nouveau code à ton MJ.' }
-            }
+        console.log('Login attempt with token:', token, 'Result:', { data, error })
 
-            const { email, player_id } = rpcData as { email: string; player_id: string; is_gm: boolean }
-
-            // 2. Sign in with Supabase Auth
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-                email,
-                password: token,
-            })
-
-            if (signInError) {
-                return { success: false, error: 'Erreur d\'authentification. Réessaie ou demande un nouveau code.' }
-            }
-
-            // 3. Fetch the full player record
-            const { data: player, error: playerError } = await supabase
-                .from('players')
-                .select('*')
-                .eq('id', player_id)
-                .single<Player>()
-
-            if (playerError || !player) {
-                return { success: false, error: 'Joueur introuvable.' }
-            }
-
-            set({ player, isGM: player.is_gm, isLoading: false })
-            return { success: true }
-        } catch {
-            return { success: false, error: 'Erreur de connexion. Vérifie ta connexion internet.' }
+        if (error || !data) {
+            return { success: false, error: 'QR code invalide. Demande un nouveau code à ton MJ.' }
         }
+
+        localStorage.setItem('lg_player_id', data.id)
+        localStorage.setItem('lg_auth_token', token)
+        set({ player: data, isGM: data.is_gm, isLoading: false })
+        return { success: true }
     },
 
-    logout: async () => {
-        await supabase.auth.signOut()
+    logout: () => {
+        localStorage.removeItem('lg_player_id')
+        localStorage.removeItem('lg_auth_token')
         set({ player: null, isGM: false, isLoading: false })
     },
 
     refreshPlayer: async () => {
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session?.user?.id) return
+        const playerId = localStorage.getItem('lg_player_id')
+        if (!playerId) return
 
         const { data } = await supabase
             .from('players')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('id', playerId)
             .single<Player>()
 
         if (data) {
@@ -78,9 +58,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     },
 
     restoreSession: async () => {
-        const { data: { session } } = await supabase.auth.getSession()
+        const playerId = localStorage.getItem('lg_player_id')
+        const token = localStorage.getItem('lg_auth_token')
 
-        if (!session?.user?.id) {
+        if (!playerId || !token) {
             set({ isLoading: false })
             return
         }
@@ -88,14 +69,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const { data } = await supabase
             .from('players')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('id', playerId)
+            .eq('auth_token', token)
             .single<Player>()
 
         if (data) {
             set({ player: data, isGM: data.is_gm, isLoading: false })
         } else {
-            // Session exists but no matching player — sign out
-            await supabase.auth.signOut()
+            localStorage.removeItem('lg_player_id')
+            localStorage.removeItem('lg_auth_token')
             set({ isLoading: false })
         }
     },

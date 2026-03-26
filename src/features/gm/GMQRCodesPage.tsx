@@ -37,12 +37,6 @@ export function GMQRCodesPage() {
       .update({ auth_token: newToken })
       .eq('id', playerId)
 
-    // Also update the Supabase Auth password so login still works
-    await supabase.rpc('update_auth_password', {
-      p_player_id: playerId,
-      p_new_password: newToken,
-    })
-
     fetchPlayers()
   }
 

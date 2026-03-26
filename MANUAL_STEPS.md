@@ -6,7 +6,7 @@ Ce document liste **toutes les étapes que l'agent ne peut pas faire** et que tu
 
 ## 1. 🗄️ Exécuter les migrations SQL dans Supabase
 
-Tu as 3 nouvelles migrations à exécuter dans l'**éditeur SQL** de ton projet Supabase :
+Tu as 2 nouvelles migrations à exécuter dans l'**éditeur SQL** de ton projet Supabase :
 
 ### Migration 013 — Triggers d'intégrité + table error_logs
 1. Va sur **https://supabase.com/dashboard** → ton projet → **SQL Editor**
@@ -18,27 +18,9 @@ Tu as 3 nouvelles migrations à exécuter dans l'**éditeur SQL** de ton projet 
 2. Copie-colle le contenu de `supabase/migrations/014_votes_metadata.sql`
 3. Exécute
 
-### Migration 015 — Supabase Auth integration (IMPORTANT)
-1. Copie-colle le contenu de `supabase/migrations/015_supabase_auth.sql`
-2. Exécute
-3. Cette migration :
-   - Crée les fonctions `login_with_token`, `provision_auth_user`, `update_auth_password`
-   - Resserre les politiques RLS (supprime les politiques ouvertes, les remplace par des vérifications `auth.uid()`)
-
-> ⚠️ **Après la migration 015, réactive les politiques RLS** que tu avais désactivées :
-> - Va dans **Authentication → Policies** (ou dans le SQL Editor)
-> - Vérifie que les politiques sur `vote_rounds`, `votes`, `eliminations`, `notifications`, `qr_codes`, `challenges`, `challenge_scores`, `teams`, `team_members` sont bien actives
-> - Tu peux les recréer en ré-exécutant les `CREATE POLICY` des migrations 004–011 si elles ont été supprimées
-
 > ⚠️ **Vérifie** ensuite dans **Table Editor** que :
 > - La table `error_logs` existe
 > - La table `votes` a bien une colonne `metadata` (type JSONB)
-
-### ⚡ Activer l'email provider dans Supabase Auth
-1. Va dans **Authentication → Providers**
-2. Active le provider **Email**
-3. **Désactive** "Confirm email" (pas besoin de confirmation email pour les joueurs)
-4. **Désactive** "Secure email change" (non applicable)
 
 ---
 
