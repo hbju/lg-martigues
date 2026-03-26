@@ -7,7 +7,6 @@ import { useNotificationStore } from '../../stores/notificationStore'
 import { NotificationBell } from '../../components/ui/NotificationBell'
 import { EliminationOverlay } from '../../components/ui/EliminationOverlay'
 import { useChallengeStore } from '../../stores/challengeStore'
-import { usePowerUpStore } from '../../stores/powerUpStore'
 
 export function HomePage() {
   const { player, logout, refreshPlayer } = useAuthStore()

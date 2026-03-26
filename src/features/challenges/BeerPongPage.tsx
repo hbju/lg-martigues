@@ -4,7 +4,6 @@ import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
-import type { Challenge, Team, TeamMember, Player } from '../../types/supabase'
 
 interface BracketMatch {
   id: string

@@ -4,7 +4,6 @@ import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { Leaderboard } from '../../components/Leaderboard'
-import type { ChallengeScore } from '../../types/supabase'
 
 export function MadScientistsPage() {
   const { player } = useAuthStore()
@@ -81,8 +80,8 @@ export function MadScientistsPage() {
         {/* Current role reveal */}
         {challenge.status === 'active' && currentRound > 0 && myRole && (
           <div className={`rounded-xl p-6 mb-6 text-center border ${myRole === 'scientist'
-              ? 'bg-purple-900/30 border-purple-500/40'
-              : 'bg-candle-600/10 border-candle-500/30'
+            ? 'bg-purple-900/30 border-purple-500/40'
+            : 'bg-candle-600/10 border-candle-500/30'
             }`}>
             <div className="text-4xl mb-3">{myRole === 'scientist' ? '🧪' : '🏃'}</div>
             <p className={`font-cinzel text-xl font-bold tracking-wider ${myRole === 'scientist' ? 'text-purple-300' : 'text-candle-400'

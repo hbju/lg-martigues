@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
-import type { Team, TeamMember } from '../../types/supabase'
 
 interface BracketMatch {
   id: string
@@ -73,7 +72,6 @@ export function GMBeerPongPage() {
     }
 
     // Generate bracket
-    const totalTeams = shuffled.length
     const rounds: BracketRound[] = []
 
     // First round

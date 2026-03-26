@@ -223,7 +223,7 @@ export function GMRewardQRPage() {
 
         pdf.setTextColor(30, 30, 30)
         pdf.text(`${i + 1}`, 15, y)
-        pdf.text(qr.label, 25, y)
+        pdf.text(qr.label || 'N/A', 25, y)
         pdf.text(`${rewardLabel}${status}`, 120, y)
         pdf.setFontSize(8)
         pdf.setTextColor(120, 120, 120)

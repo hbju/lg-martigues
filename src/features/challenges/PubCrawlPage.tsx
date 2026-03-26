@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
-import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 
 interface BarStop {
   bar: string
@@ -15,7 +14,6 @@ interface BarStop {
 export function PubCrawlPage() {
   const { player } = useAuthStore()
   const { challenges, teams, teamMembers, scores, subscribeToAll, subscribeToChallenge } = useChallengeStore()
-  const { players } = useRealtimePlayers()
   const navigate = useNavigate()
 
   const challenge = challenges.find(c => c.type === 'pub_crawl')
@@ -121,14 +119,14 @@ export function PubCrawlPage() {
                 <div
                   key={idx}
                   className={`rounded-xl p-4 border transition-colors ${isCurrent ? 'bg-candle-600/20 border-candle-500/30' :
-                      isCompleted ? 'bg-night-800/30 border-night-700/20 opacity-60' :
-                        'bg-parchment-card border-night-700/20'
+                    isCompleted ? 'bg-night-800/30 border-night-700/20 opacity-60' :
+                      'bg-parchment-card border-night-700/20'
                     }`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-cinzel font-bold text-sm ${isCurrent ? 'bg-candle-500 text-night-950' :
-                        isCompleted ? 'bg-night-600 text-night-800' :
-                          'bg-night-700 text-moon-400'
+                      isCompleted ? 'bg-night-600 text-night-800' :
+                        'bg-night-700 text-moon-400'
                       }`}>
                       {isCompleted ? '✓' : idx + 1}
                     </div>
