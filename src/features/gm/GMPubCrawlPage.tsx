@@ -2,21 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useChallengeStore } from '../../stores/challengeStore'
-import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
-
-interface BarStop {
-  bar: string
-  order: number
-  meets_team: string
-  address: string
-  completed?: boolean
-}
 
 export function GMPubCrawlPage() {
   const { challenges, teams, teamMembers, scores, subscribeToAll, subscribeToChallenge } = useChallengeStore()
-  const { players } = useRealtimePlayers()
   const [isCreating, setIsCreating] = useState(false)
-  const [teamCount, setTeamCount] = useState(6)
   const [clueThreshold, setClueThreshold] = useState(2)
   const [finalDestName, setFinalDestName] = useState('')
 
@@ -32,15 +21,6 @@ export function GMPubCrawlPage() {
     const unsub = subscribeToChallenge(challenge.id)
     return unsub
   }, [challenge?.id])
-
-  function getPlayerName(id: string): string {
-    return players.find(p => p.id === id)?.name ?? 'Inconnu'
-  }
-
-  function getTeamName(teamId: string): string {
-    const team = teams.find(t => t.id === teamId)
-    return team?.name ?? teamId
-  }
 
   const challengeTeams = teams.filter(t => t.challenge_id === challenge?.id)
 
@@ -256,8 +236,8 @@ export function GMPubCrawlPage() {
                     <button
                       onClick={() => handleTogglePenalty(team.id)}
                       className={`border px-3 py-1.5 rounded-lg text-xs font-crimson transition-colors ${hasPenalty
-                          ? 'bg-red-600/20 border-red-500/30 text-red-400'
-                          : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
+                        ? 'bg-red-600/20 border-red-500/30 text-red-400'
+                        : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
                         }`}
                     >
                       {hasPenalty ? '❌ Retirer pénalité' : '⚠️ Pénalité'}

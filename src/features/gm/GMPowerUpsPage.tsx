@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
-import type { PowerUp, Player } from '../../types/supabase'
+import type { PowerUp } from '../../types/supabase'
 
 export function GMPowerUpsPage() {
   const { players } = useRealtimePlayers()
