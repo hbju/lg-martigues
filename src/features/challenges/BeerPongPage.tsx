@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
+import { GiBeerStein, GiTrophy } from 'react-icons/gi'
+import { RiCheckboxCircleFill } from 'react-icons/ri'
 
 interface BracketMatch {
   id: string
@@ -92,7 +94,7 @@ export function BeerPongPage() {
     await supabase.from('notifications').insert({
       player_id: selectedPartner,
       type: 'challenge_update' as const,
-      title: 'Beer Pong 🍺',
+      title: 'Beer Pong',
       message: `${player.name} t'a inscrit(e) au tournoi de Beer Pong !`,
     })
 
@@ -106,7 +108,7 @@ export function BeerPongPage() {
   if (!challenge) {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-        <div className="text-5xl mb-4">🍺</div>
+        <div className="text-5xl mb-4"><GiBeerStein /></div>
         <p className="font-cinzel text-parchment-100 text-xl mb-2">Beer Pong</p>
         <p className="font-crimson text-moon-400 italic">Le tournoi n'a pas encore été créé par le MJ.</p>
         <button onClick={() => navigate('/home')} className="mt-4 text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Retour</button>
@@ -119,7 +121,7 @@ export function BeerPongPage() {
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🍺 Beer Pong</h1>
+            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide inline-flex items-center gap-2"><GiBeerStein /> Beer Pong</h1>
             <p className="font-crimson text-moon-400 text-sm italic">
               {challenge.status === 'upcoming' ? 'Inscriptions ouvertes' :
                 challenge.status === 'active' ? 'Tournoi en cours' : 'Terminé'}
@@ -163,7 +165,7 @@ export function BeerPongPage() {
         {/* Already registered */}
         {myTeam && challenge.status === 'upcoming' && (
           <div className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 mb-6">
-            <p className="font-cinzel text-candle-400 text-sm font-semibold">✅ Inscrit !</p>
+            <p className="font-cinzel text-candle-400 text-sm font-semibold"><RiCheckboxCircleFill className="inline" /> Inscrit !</p>
             <p className="font-crimson text-moon-400 text-sm mt-1">
               Équipe : <strong className="text-parchment-200">{myTeam.name}</strong>
             </p>
@@ -193,7 +195,7 @@ export function BeerPongPage() {
             {bracket.map((round) => (
               <div key={round.round}>
                 <h2 className="font-cinzel text-candle-400 font-semibold text-sm tracking-wider uppercase mb-3">
-                  {round.round === bracket.length ? '🏆 Finale' : `Tour ${round.round}`}
+                  {round.round === bracket.length ? <><GiTrophy className="inline" /> Finale</> : `Tour ${round.round}`}
                 </h2>
                 <div className="space-y-3">
                   {round.matches.map((match) => {
@@ -207,12 +209,12 @@ export function BeerPongPage() {
                           <div className="flex-1">
                             <p className={`font-crimson text-sm ${match.winner === match.team_a ? 'text-candle-400 font-bold' : 'text-parchment-200'}`}>
                               {match.team_a ? getTeamName(match.team_a) : 'TBD'}
-                              {match.winner === match.team_a && ' 🏆'}
+                              {match.winner === match.team_a && <> <GiTrophy className="inline text-candle-400" /></>}
                             </p>
                             <div className="h-px bg-night-700/30 my-2" />
                             <p className={`font-crimson text-sm ${match.winner === match.team_b ? 'text-candle-400 font-bold' : 'text-parchment-200'}`}>
                               {match.team_b ? getTeamName(match.team_b) : 'TBD'}
-                              {match.winner === match.team_b && ' 🏆'}
+                              {match.winner === match.team_b && <> <GiTrophy className="inline text-candle-400" /></>}
                             </p>
                           </div>
                           <div className="text-center ml-4">
@@ -236,7 +238,7 @@ export function BeerPongPage() {
 
         {challenge.status === 'completed' && (
           <div className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 mt-6 text-center">
-            <div className="text-4xl mb-2">🏆</div>
+            <div className="text-4xl mb-2"><GiTrophy /></div>
             <p className="font-cinzel text-candle-400 font-bold text-lg">Tournoi terminé !</p>
           </div>
         )}

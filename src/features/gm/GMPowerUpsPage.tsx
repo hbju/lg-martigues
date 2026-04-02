@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import type { PowerUp } from '../../types/supabase'
+import { GiCheckedShield, GiCrystalBall } from 'react-icons/gi'
+import { RiCheckboxCircleFill, RiCloseCircleFill } from 'react-icons/ri'
+import { GiBoltSpellCast } from 'react-icons/gi'
 
 export function GMPowerUpsPage() {
   const { players } = useRealtimePlayers()
@@ -63,7 +66,7 @@ export function GMPowerUpsPage() {
       .eq('id', powerUp.id)
 
     // Send notification to the player
-    const roleLabel = target.role === 'werewolf' ? '🐺 Loup-Garou' : '🏘️ Villageois'
+    const roleLabel = target.role === 'werewolf' ? 'Loup-Garou' : 'Villageois'
     await supabase.from('notifications').insert({
       player_id: powerUp.player_id,
       type: 'clairvoyance_result' as const,
@@ -98,7 +101,7 @@ export function GMPowerUpsPage() {
       granted_by_gm: true,
     })
 
-    const typeLabel = grantType === 'shield' ? '🛡️ Bouclier' : '🔮 Clairvoyance'
+    const typeLabel = grantType === 'shield' ? 'Bouclier' : 'Clairvoyance'
     await supabase.from('notifications').insert({
       player_id: grantPlayerId,
       type: grantType === 'shield' ? 'shield_gained' as const : 'clairvoyance_gained' as const,
@@ -138,7 +141,7 @@ export function GMPowerUpsPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
-            ⚡ Power-ups
+            <GiBoltSpellCast className="inline" /> Power-ups
           </h1>
           <Link to="/gm" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Dashboard</Link>
         </div>
@@ -169,8 +172,8 @@ export function GMPowerUpsPage() {
                 onChange={e => setGrantType(e.target.value as 'shield' | 'clairvoyance')}
                 className="bg-night-800 text-parchment-200 rounded-lg px-3 py-2 border border-night-600 focus:border-candle-500 focus:outline-none font-crimson"
               >
-                <option value="shield">🛡️ Bouclier</option>
-                <option value="clairvoyance">🔮 Clairvoyance</option>
+                <option value="shield">Bouclier</option>
+                <option value="clairvoyance">Clairvoyance</option>
               </select>
             </div>
             <button
@@ -187,7 +190,7 @@ export function GMPowerUpsPage() {
         {pendingClairvoyances.length > 0 && (
           <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 mb-6">
             <h2 className="font-cinzel text-purple-300 font-semibold text-sm tracking-wider uppercase mb-3">
-              🔮 Clairvoyances en attente
+              <GiCrystalBall className="inline" /> Clairvoyances en attente
             </h2>
             <div className="space-y-3">
               {pendingClairvoyances.map(p => (
@@ -201,13 +204,13 @@ export function GMPowerUpsPage() {
                       onClick={() => handleConfirmClairvoyance(p)}
                       className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-cinzel hover:bg-purple-500 transition-colors"
                     >
-                      ✅ Confirmer
+                      <RiCheckboxCircleFill className="inline" /> Confirmer
                     </button>
                     <button
                       onClick={() => handleRejectClairvoyance(p)}
                       className="bg-night-700 text-moon-400 px-3 py-1.5 rounded-lg text-xs font-crimson hover:bg-night-600 transition-colors border border-night-600"
                     >
-                      ❌ Rejeter
+                      <RiCloseCircleFill className="inline" /> Rejeter
                     </button>
                   </div>
                 </div>
@@ -220,7 +223,7 @@ export function GMPowerUpsPage() {
         {activeShields.length > 0 && (
           <div className="bg-candle-600/10 border border-candle-500/20 rounded-xl p-4 mb-6">
             <h2 className="font-cinzel text-candle-400 font-semibold text-sm tracking-wider uppercase mb-3">
-              🛡️ Boucliers actifs
+              <GiCheckedShield className="inline" /> Boucliers actifs
             </h2>
             <div className="space-y-2">
               {activeShields.map(s => (
@@ -255,7 +258,7 @@ export function GMPowerUpsPage() {
             {powerUps.map(p => (
               <div key={p.id} className={`p-2.5 bg-night-800/50 border border-night-700/30 rounded-lg flex items-center justify-between ${p.used ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-2">
-                  <span>{p.type === 'shield' ? '🛡️' : '🔮'}</span>
+                  <span>{p.type === 'shield' ? <GiCheckedShield className="inline" /> : <GiCrystalBall className="inline" />}</span>
                   <div>
                     <p className="font-crimson text-parchment-200 text-sm">{getPlayerName(p.player_id)}</p>
                     <p className="font-crimson text-moon-400/50 text-xs">{p.source} — {p.used ? 'utilisé' : 'actif'}</p>

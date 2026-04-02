@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
 import type { QrCode } from '../../types/supabase'
+import { GiCheckedShield, GiCrystalBall } from 'react-icons/gi'
+import { RiCameraFill, RiCheckboxCircleFill, RiCloseCircleFill, RiHourglassFill } from 'react-icons/ri'
 
 export function ScanPage() {
   const [searchParams] = useSearchParams()
@@ -119,7 +121,7 @@ export function ScanPage() {
 
   if (!player) return null
 
-  const rewardLabel = qrCode?.reward_type === 'shield' ? '🛡️ Bouclier' : '🔮 Clairvoyance'
+  const rewardLabel = qrCode?.reward_type === 'shield' ? <><GiCheckedShield className="inline" /> Bouclier</> : <><GiCrystalBall className="inline" /> Clairvoyance</>
 
   return (
     <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
@@ -130,7 +132,7 @@ export function ScanPage() {
 
         {status === 'no_code' && !showScanner && (
           <div>
-            <div className="text-5xl mb-4">📷</div>
+            <div className="text-5xl mb-4"><RiCameraFill /></div>
             <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-4">
               Scanner un QR
             </h1>
@@ -163,7 +165,7 @@ export function ScanPage() {
 
         {status === 'pending' && (
           <div>
-            <div className="text-5xl mb-4">✅</div>
+            <div className="text-5xl mb-4"><RiCheckboxCircleFill /></div>
             <h1 className="font-cinzel text-2xl font-bold text-candle-400 tracking-wide mb-2">
               QR scanné !
             </h1>
@@ -172,7 +174,7 @@ export function ScanPage() {
             </p>
             <div className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 mb-6">
               <p className="font-crimson text-candle-400 text-sm animate-pulse">
-                ⏳ En attente d'approbation du MJ...
+                <RiHourglassFill className="inline" /> En attente d'approbation du MJ...
               </p>
             </div>
             <button
@@ -186,7 +188,7 @@ export function ScanPage() {
 
         {status === 'already_claimed' && (
           <div>
-            <div className="text-5xl mb-4">🚫</div>
+            <div className="text-5xl mb-4"><RiCloseCircleFill /></div>
             <h1 className="font-cinzel text-xl font-bold text-red-400 tracking-wide mb-2">
               Déjà réclamé !
             </h1>
@@ -204,7 +206,7 @@ export function ScanPage() {
 
         {status === 'error' && (
           <div>
-            <div className="text-5xl mb-4">❌</div>
+            <div className="text-5xl mb-4"><RiCloseCircleFill /></div>
             <h1 className="font-cinzel text-xl font-bold text-red-400 tracking-wide mb-2">
               QR code invalide
             </h1>

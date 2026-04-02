@@ -28,11 +28,9 @@ import { ScanPage } from './features/powerups/ScanPage'
 import { GMPowerUpsPage } from './features/gm/GMPowerUpsPage'
 import { GMRewardQRPage } from './features/gm/GMRewardQRPage'
 import { BeerPongPage } from './features/challenges/BeerPongPage'
-import { PubCrawlPage } from './features/challenges/PubCrawlPage'
 import { MadScientistsPage } from './features/challenges/MadScientistsPage'
 import { GMChallengesPage } from './features/gm/GMChallengesPage'
 import { GMBeerPongPage } from './features/gm/GMBeerPongPage'
-import { GMPubCrawlPage } from './features/gm/GMPubCrawlPage'
 import { GMMadScientistsPage } from './features/gm/GMMadScientistsPage'
 import { GMChecklistPage } from './features/gm/GMChecklistPage'
 import { GMHealthPage } from './features/gm/GMHealthPage'
@@ -204,15 +202,6 @@ function AppRoutes() {
       />
 
       <Route
-        path="/challenges/pub-crawl"
-        element={
-          <PlayerGuard>
-            <PubCrawlPage />
-          </PlayerGuard>
-        }
-      />
-
-      <Route
         path="/challenges/mad-scientists"
         element={
           <PlayerGuard>
@@ -254,15 +243,6 @@ function AppRoutes() {
         element={
           <GMGuard>
             <GMBeerPongPage />
-          </GMGuard>
-        }
-      />
-
-      <Route
-        path="/gm/challenges/pub-crawl"
-        element={
-          <GMGuard>
-            <GMPubCrawlPage />
           </GMGuard>
         }
       />

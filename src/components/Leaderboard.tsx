@@ -1,3 +1,5 @@
+import { GiMedal } from 'react-icons/gi'
+
 interface LeaderboardEntry {
   playerId: string
   playerName: string
@@ -20,13 +22,13 @@ export function Leaderboard({ scores, title = 'Classement', currentPlayerId, cla
       <div className="space-y-2">
         {scores.map((entry, idx) => {
           const isMe = entry.playerId === currentPlayerId
-          const rankEmoji = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`
+          const rankEmoji = idx === 0 ? <GiMedal className="inline text-base text-yellow-400" /> : idx === 1 ? <GiMedal className="inline text-base text-gray-300" /> : idx === 2 ? <GiMedal className="inline text-base text-amber-600" /> : `${idx + 1}.`
           return (
             <div
               key={entry.playerId}
               className={`flex items-center justify-between p-2.5 rounded-lg border transition-colors ${isMe
-                  ? 'bg-candle-600/10 border-candle-500/30'
-                  : 'bg-night-800/50 border-night-700/30'
+                ? 'bg-candle-600/10 border-candle-500/30'
+                : 'bg-night-800/50 border-night-700/30'
                 }`}
             >
               <div className="flex items-center gap-3">

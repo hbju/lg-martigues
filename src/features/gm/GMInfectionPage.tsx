@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useGameStore } from '../../stores/gameStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
+import { GiBiohazard } from 'react-icons/gi'
 
 export function GMInfectionPage() {
     const { gameState, fetchGameState, subscribeToGameState } = useGameStore()
@@ -30,7 +31,7 @@ export function GMInfectionPage() {
             <div className="min-h-screen bg-village-night p-6">
                 <div className="max-w-2xl mx-auto">
                     <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-6">
-                        🦠 Infection
+                        <GiBiohazard className="inline" /> Infection
                     </h1>
                     <div className="bg-parchment-card rounded-xl p-6 backdrop-blur-sm text-center">
                         <p className="font-crimson text-moon-400 italic">
@@ -111,7 +112,7 @@ export function GMInfectionPage() {
         <div className="min-h-screen bg-village-night p-6">
             <div className="max-w-2xl mx-auto">
                 <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-6">
-                    🦠 Infection
+                    <GiBiohazard className="inline" /> Infection
                 </h1>
 
                 <div className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-5 mb-6">
@@ -139,7 +140,7 @@ export function GMInfectionPage() {
                                     disabled={isConfirming || isRejecting}
                                     className="flex-1 bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                                 >
-                                    {isConfirming ? '...' : '🦠 Confirmer l\'infection'}
+                                    {isConfirming ? '...' : <><GiBiohazard className="inline" /> Confirmer l'infection</>}
                                 </button>
                             </div>
                         </>

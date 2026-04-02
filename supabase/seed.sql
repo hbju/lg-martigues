@@ -22,4 +22,5 @@ INSERT INTO players (name, auth_token, status) VALUES
   ('Omuking', 'token-player-13', 'pending'),
   ('Deb', 'token-player-14', 'pending'),
   ('Fafa', 'token-player-15', 'pending'),
-  ('Taïre', 'token-player-16', 'pending');
+  ('Taïre', 'token-player-16', 'pending'),
+  ('Céfesse', 'token-player-17', 'pending');

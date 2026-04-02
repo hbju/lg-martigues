@@ -5,6 +5,7 @@ import { useVoteStore, getVoteProgress } from '../../stores/voteStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { CountdownTimer } from '../../components/ui/CountdownTimer'
 import { supabase } from '../../lib/supabase'
+import { GiWolfHead, GiBiohazard, GiNightSleep, GiBloodySword } from 'react-icons/gi'
 
 
 export function WerewolfPage() {
@@ -52,7 +53,7 @@ export function WerewolfPage() {
     if (!discoveryConfirmed) {
         return (
             <div className="min-h-screen bg-gradient-to-b from-blood-900 via-night-950 to-night-950 flex flex-col items-center justify-center p-6">
-                <div className="text-5xl mb-4">🐺</div>
+                <div className="text-5xl mb-4"><GiWolfHead className="inline text-5xl" /></div>
                 <h1 className="font-cinzel text-2xl font-bold text-red-400 tracking-wide mb-4">Meute des Loups</h1>
                 <div className="bg-blood-800/30 border border-blood-500/30 rounded-xl p-6 max-w-sm text-center">
                     <p className="font-crimson text-red-300/80 italic">
@@ -96,7 +97,7 @@ export function WerewolfPage() {
             <div className="max-w-md mx-auto">
                 {/* Header */}
                 <div className="text-center mb-6">
-                    <div className="text-3xl mb-2">🐺</div>
+                    <div className="text-3xl mb-2"><GiWolfHead className="inline text-3xl" /></div>
                     <h1 className="font-cinzel text-2xl font-bold text-red-400 tracking-wide">
                         Tanière des Loups
                     </h1>
@@ -108,7 +109,7 @@ export function WerewolfPage() {
                     <div className="space-y-2">
                         {aliveWerewolves.map(w => (
                             <div key={w.id} className="flex items-center gap-2">
-                                <span className="text-sm">🐺</span>
+                                <span className="text-sm"><GiWolfHead className="inline" /></span>
                                 <span className="font-crimson text-red-200">
                                     {w.name}
                                     {w.id === player.id && <span className="text-red-400/50 ml-1 italic text-sm">(toi)</span>}
@@ -122,7 +123,7 @@ export function WerewolfPage() {
                 {isLoneWolf && (
                     <div className="bg-blood-800/30 border border-blood-500/40 rounded-xl p-5 mb-6">
                         <h2 className="font-cinzel text-red-400 font-semibold text-sm tracking-wider uppercase mb-3">
-                            🦠 Infection
+                            <GiBiohazard className="inline" /> Infection
                         </h2>
                         <p className="font-crimson text-red-300/80 text-sm mb-4">
                             Tu es le dernier loup. Choisis un villageois à corrompre.
@@ -140,8 +141,8 @@ export function WerewolfPage() {
                                             key={p.id}
                                             onClick={() => setInfectionTarget(p.id)}
                                             className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all border ${infectionTarget === p.id
-                                                    ? 'bg-blood-800/40 border-blood-500/50'
-                                                    : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
+                                                ? 'bg-blood-800/40 border-blood-500/50'
+                                                : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
                                                 }`}
                                         >
                                             <div className={`w-3 h-3 rounded-full border-2 ${infectionTarget === p.id ? 'border-blood-500 bg-blood-500' : 'border-moon-400/50'
@@ -155,7 +156,7 @@ export function WerewolfPage() {
                                     disabled={!infectionTarget || isInfecting}
                                     className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 disabled:from-night-700 disabled:to-night-700 disabled:text-night-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                                 >
-                                    {isInfecting ? '...' : '🦠 Corrompre'}
+                                    {isInfecting ? '...' : <><GiBiohazard className="inline" /> Corrompre</>}
                                 </button>
                             </>
                         )}
@@ -210,8 +211,8 @@ export function WerewolfPage() {
                                             key={p.id}
                                             onClick={() => setSelectedTarget(p.id)}
                                             className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all border ${selectedTarget === p.id
-                                                    ? 'bg-blood-800/40 border-blood-500/50'
-                                                    : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
+                                                ? 'bg-blood-800/40 border-blood-500/50'
+                                                : 'bg-night-800/50 border-night-700/30 hover:bg-night-700/50'
                                                 }`}
                                         >
                                             <div className={`w-3 h-3 rounded-full border-2 ${selectedTarget === p.id ? 'border-blood-500 bg-blood-500' : 'border-moon-400/50'
@@ -235,7 +236,7 @@ export function WerewolfPage() {
                     /* No murder round active */
                     <div className="bg-night-800/30 rounded-xl p-4 border border-night-700/30 border-dashed">
                         <p className="text-red-400/40 text-center text-sm font-crimson italic">
-                            🌙 La fenêtre de chasse n'est pas ouverte. Patientez...
+                            <GiNightSleep className="inline" /> La fenêtre de chasse n'est pas ouverte. Patientez...
                         </p>
                     </div>
                 )}
@@ -246,7 +247,7 @@ export function WerewolfPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70">
                     <div className="bg-night-800 border border-blood-500/30 rounded-xl p-6 max-w-sm w-full">
                         <div className="text-center">
-                            <div className="text-3xl mb-3">🔪</div>
+                            <div className="text-3xl mb-3"><GiBloodySword className="inline text-3xl" /></div>
                             <h2 className="font-cinzel text-red-400 text-lg font-semibold mb-2">Confirmer la cible</h2>
                             <p className="font-crimson text-moon-400 mb-6">
                                 Tu choisis d'éliminer <span className="text-red-400 font-semibold">{selectedTargetPlayer.name}</span>.

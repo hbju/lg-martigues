@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import type { GameState, VoteRound, Vote, Player } from '../../types/supabase'
+import { GiWolfHead, GiVillage, GiScales, GiTrophy, GiDeathSkull, GiMedal, GiTheater } from 'react-icons/gi'
+import { RiBarChartBoxFill, RiMegaphoneFill, RiQuestionFill } from 'react-icons/ri'
+import { GiPartyPopper } from 'react-icons/gi'
 
 type TVScene = 'idle' | 'vote_countdown' | 'vote_results' | 'murder' | 'leaderboard' | 'custom_message' | 'final_reveal'
 
@@ -218,7 +221,7 @@ export function TVPage() {
         <div className="absolute top-12 right-24 w-32 h-32 rounded-full bg-gradient-to-br from-moon-200 to-moon-300 opacity-10 moon-glow" />
 
         <div className="text-center relative z-10">
-          <div className="text-8xl mb-8 animate-slow-pulse">🐺</div>
+          <div className="text-8xl mb-8 animate-slow-pulse"><GiWolfHead className="inline text-8xl" /></div>
           <h1 className="font-cinzel text-5xl font-bold text-parchment-100 tracking-[0.3em] mb-4">
             LES LOUPS-GAROUS
           </h1>
@@ -254,7 +257,7 @@ export function TVPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-blood-900/20 via-transparent to-transparent" />
         <div className="text-center relative z-10">
           <h1 className="font-cinzel text-4xl font-bold text-parchment-100 tracking-[0.2em] mb-8">
-            ⚖️ LE CONSEIL A LIEU
+            <GiScales className="inline" /> LE CONSEIL A LIEU
           </h1>
 
           {endTime && <TVCountdown endTime={endTime} />}
@@ -298,7 +301,7 @@ export function TVPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-blood-900/30 via-transparent to-transparent" />
         <div className="text-center relative z-10 w-full max-w-2xl">
           <h1 className="font-cinzel text-3xl font-bold text-parchment-100 tracking-[0.2em] mb-8">
-            📊 RÉSULTATS DU CONSEIL
+            <RiBarChartBoxFill className="inline" /> RÉSULTATS DU CONSEIL
           </h1>
 
           <div className="space-y-4 mb-8">
@@ -308,8 +311,8 @@ export function TVPage() {
                 <div
                   key={targetId}
                   className={`rounded-xl p-4 flex items-center justify-between ${isEliminated
-                      ? 'bg-blood-800/40 border-2 border-red-500/60'
-                      : 'bg-night-800/50 border border-night-700/30'
+                    ? 'bg-blood-800/40 border-2 border-red-500/60'
+                    : 'bg-night-800/50 border border-night-700/30'
                     }`}
                 >
                   <div className="flex items-center gap-4">
@@ -319,7 +322,7 @@ export function TVPage() {
                     <div>
                       <p className={`font-cinzel text-lg font-semibold ${isEliminated ? 'text-red-300' : 'text-parchment-200'}`}>
                         {getPlayerName(targetId)}
-                        {isEliminated && ' 💀'}
+                        {isEliminated && <> <GiDeathSkull className="inline" /></>}
                       </p>
                       <p className="font-crimson text-moon-400/60 text-sm">
                         Voté par : {voterIds.map(id => getPlayerName(id)).join(', ')}
@@ -352,7 +355,7 @@ export function TVPage() {
           <p className="font-crimson text-moon-400/60 text-2xl italic mb-8">
             Quand l'aube se lève...
           </p>
-          <div className="text-6xl mb-6">💀</div>
+          <div className="text-6xl mb-6"><GiDeathSkull className="inline text-6xl" /></div>
           <h1 className="font-cinzel text-4xl font-bold text-red-400 tracking-wider mb-4">
             {victimName}
           </h1>
@@ -372,11 +375,11 @@ export function TVPage() {
     return (
       <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-12">
         <h1 className="font-cinzel text-4xl font-bold text-parchment-100 tracking-[0.2em] mb-8">
-          🏆 {title}
+          <GiTrophy className="inline" /> {title}
         </h1>
         <div className="w-full max-w-lg space-y-3">
           {leaderData.map((entry, idx) => {
-            const rankEmoji = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`
+            const rankEmoji = idx === 0 ? <GiMedal className="inline text-2xl text-yellow-400" /> : idx === 1 ? <GiMedal className="inline text-2xl text-gray-300" /> : idx === 2 ? <GiMedal className="inline text-2xl text-amber-600" /> : `${idx + 1}.`
             return (
               <div key={idx} className="bg-night-800/50 border border-night-700/30 rounded-xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -397,7 +400,7 @@ export function TVPage() {
     const message = (tvState.data?.message as string) ?? ''
     return (
       <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-12">
-        <div className="text-5xl mb-6">📢</div>
+        <div className="text-5xl mb-6"><RiMegaphoneFill className="inline text-5xl" /></div>
         <p className="font-cinzel text-4xl font-bold text-parchment-100 tracking-wider text-center max-w-3xl leading-relaxed">
           {message}
         </p>
@@ -414,7 +417,7 @@ export function TVPage() {
     return (
       <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-12 relative overflow-hidden">
         <h1 className="font-cinzel text-4xl font-bold text-parchment-100 tracking-[0.3em] mb-10">
-          🎭 RÉVÉLATION FINALE
+          <GiTheater className="inline" /> RÉVÉLATION FINALE
         </h1>
 
         <div className="grid grid-cols-2 gap-4 max-w-2xl w-full mb-10">
@@ -425,22 +428,22 @@ export function TVPage() {
               <div
                 key={p.id}
                 className={`rounded-xl p-4 text-center transition-all duration-700 ${isRevealed
-                    ? role === 'werewolf'
-                      ? 'bg-blood-800/60 border-2 border-red-500/60'
-                      : 'bg-candle-600/20 border-2 border-candle-500/40'
-                    : 'bg-night-800/50 border border-night-700/30'
+                  ? role === 'werewolf'
+                    ? 'bg-blood-800/60 border-2 border-red-500/60'
+                    : 'bg-candle-600/20 border-2 border-candle-500/40'
+                  : 'bg-night-800/50 border border-night-700/30'
                   }`}
               >
                 <p className="font-cinzel text-lg font-semibold text-parchment-200 mb-1">{p.name}</p>
                 {isRevealed ? (
                   <div className="animate-fade-in-up">
-                    <span className="text-3xl">{role === 'werewolf' ? '🐺' : '🏘️'}</span>
+                    <span className="text-3xl">{role === 'werewolf' ? <GiWolfHead className="inline text-3xl" /> : <GiVillage className="inline text-3xl" />}</span>
                     <p className={`font-cinzel text-sm mt-1 ${role === 'werewolf' ? 'text-red-400' : 'text-candle-400'}`}>
                       {role === 'werewolf' ? 'Loup-Garou' : 'Villageois'}
                     </p>
                   </div>
                 ) : (
-                  <div className="text-3xl">❓</div>
+                  <div className="text-3xl"><RiQuestionFill className="inline text-3xl" /></div>
                 )}
               </div>
             )
@@ -449,7 +452,7 @@ export function TVPage() {
 
         {allRevealed && (
           <div className="text-center animate-fade-in-up">
-            <div className="text-5xl mb-4">{werewolfWin ? '🐺' : '🎉'}</div>
+            <div className="text-5xl mb-4">{werewolfWin ? <GiWolfHead className="inline text-5xl" /> : <GiPartyPopper className="inline text-5xl" />}</div>
             <h2 className={`font-cinzel text-3xl font-bold tracking-wider ${werewolfWin ? 'text-red-400' : 'text-candle-400'}`}>
               {werewolfWin ? 'Les Loups-Garous gagnent !' : 'Les Villageois gagnent !'}
             </h2>

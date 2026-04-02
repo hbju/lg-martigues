@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
+import { GiScales, GiWolfHead, GiGhost } from 'react-icons/gi'
 
 interface EliminationOverlayProps {
     method: 'council' | 'werewolf'
@@ -8,16 +9,16 @@ interface EliminationOverlayProps {
 export function EliminationOverlay({ method, onDismiss }: EliminationOverlayProps) {
     const [stage, setStage] = useState<'announcement' | 'reminder'>('announcement')
 
-    const messages = {
+    const messages: Record<string, { title: string; subtitle: string; icon: ReactNode }> = {
         council: {
             title: 'Éliminé par le Conseil',
             subtitle: 'Le village a voté contre toi.',
-            icon: '⚖️',
+            icon: <GiScales />,
         },
         werewolf: {
             title: 'Tué dans la nuit',
             subtitle: 'Les loups-garous t\'ont choisi comme victime.',
-            icon: '🐺',
+            icon: <GiWolfHead />,
         },
     }
 
@@ -27,7 +28,7 @@ export function EliminationOverlay({ method, onDismiss }: EliminationOverlayProp
         return (
             <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-6 bg-night-950/95">
                 <div className="text-center animate-fade-in-up">
-                    <div className="text-5xl mb-4">👻</div>
+                    <div className="text-5xl mb-4"><GiGhost /></div>
                     <p className="font-crimson text-moon-400 text-lg mb-2 italic">
                         Tu peux choisir de révéler ton rôle aux autres joueurs.
                     </p>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { useAuthStore } from '../../stores/authStore'
+import { GiWolfHead } from 'react-icons/gi'
 
 export function LoginPage() {
   const [searchParams] = useSearchParams()
@@ -97,7 +98,7 @@ export function LoginPage() {
       <div className="absolute top-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-moon-200 to-moon-300 opacity-20 moon-glow" />
 
       <div className="text-center mb-10 relative z-10">
-        <div className="text-6xl mb-4 animate-slow-pulse">🐺</div>
+        <div className="flex justify-center text-9xl mb-4 animate-slow-pulse"><GiWolfHead /></div>
         <h1 className="font-cinzel text-3xl font-bold text-parchment-100 tracking-wider">
           Les Loups-Garous
         </h1>

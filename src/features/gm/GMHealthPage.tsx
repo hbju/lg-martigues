@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useGameStore } from '../../stores/gameStore'
 import type { Player, VoteRound } from '../../types/supabase'
+import { GiHealthNormal } from 'react-icons/gi'
+import { RiRefreshLine } from 'react-icons/ri'
 
 interface HealthCheck {
   label: string
@@ -97,14 +99,18 @@ export function GMHealthPage() {
     setIsLoading(false)
   }
 
-  const statusIcons = { ok: '🟢', warning: '🟡', error: '🔴' }
+  const statusIcons: Record<string, ReactNode> = {
+    ok: <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />,
+    warning: <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block" />,
+    error: <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />,
+  }
 
   return (
     <div className="min-h-screen bg-village-night p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
-            🏥 Diagnostic Système
+            <GiHealthNormal className="inline" /> Diagnostic Système
           </h1>
           <Link
             to="/gm"
@@ -118,7 +124,7 @@ export function GMHealthPage() {
           onClick={runDiagnostics}
           className="w-full bg-night-800 hover:bg-night-700 text-parchment-200 font-crimson py-2 rounded-lg transition-colors border border-night-600 mb-6"
         >
-          🔄 Relancer le diagnostic
+          <RiRefreshLine className="inline" /> Relancer le diagnostic
         </button>
 
         {isLoading ? (

@@ -6,6 +6,8 @@ import { useGameStore } from '../../stores/gameStore'
 import { CountdownTimer } from '../../components/ui/CountdownTimer'
 import { motion } from 'framer-motion'
 import type { VoteRound, Vote } from '../../types/supabase'
+import { GiWolfHead, GiStopSign } from 'react-icons/gi'
+import { RiSearchLine, RiCheckboxCircleFill, RiQuestionFill } from 'react-icons/ri'
 
 export function ContinuePollPage() {
   const { player } = useAuthStore()
@@ -109,7 +111,7 @@ export function ContinuePollPage() {
           className="text-center"
         >
           <div className="text-5xl mb-4">
-            {result === 'continue' ? '🔍' : '✋'}
+            {result === 'continue' ? <RiSearchLine /> : <GiStopSign />}
           </div>
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-3">
             {result === 'continue'
@@ -144,7 +146,7 @@ export function ContinuePollPage() {
   if (hasVoted) {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-        <div className="text-4xl mb-4">✅</div>
+        <div className="text-4xl mb-4"><RiCheckboxCircleFill /></div>
         <p className="font-cinzel text-parchment-200 text-xl mb-2">Vote enregistré</p>
         <p className="font-crimson text-moon-400 italic">En attente du résultat...</p>
         {pollRound.timer_end_at && (
@@ -164,7 +166,7 @@ export function ContinuePollPage() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full text-center"
       >
-        <div className="text-4xl mb-4">🐺❓</div>
+        <div className="text-4xl mb-4"><GiWolfHead className="inline" /><RiQuestionFill className="inline" /></div>
         <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-3">
           Pensez-vous qu'il reste des Loups&nbsp;?
         </h1>
@@ -184,14 +186,14 @@ export function ContinuePollPage() {
             disabled={isSubmitting}
             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 disabled:opacity-50 text-parchment-100 font-cinzel font-semibold py-4 rounded-xl transition-all shadow-lg shadow-blood-700/30 text-lg"
           >
-            🔍 Continuer la chasse
+            <RiSearchLine className="inline" /> Continuer la chasse
           </button>
           <button
             onClick={() => handleVote('stop')}
             disabled={isSubmitting}
             className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 disabled:opacity-50 text-night-950 font-cinzel font-semibold py-4 rounded-xl transition-all shadow-lg shadow-candle-500/20 text-lg"
           >
-            ✋ Nous sommes en sécurité
+            <GiStopSign className="inline" /> Nous sommes en sécurité
           </button>
         </div>
       </motion.div>

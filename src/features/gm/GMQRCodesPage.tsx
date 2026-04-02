@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import type { Player } from '../../types/supabase'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
+import { RiHourglassFill, RiFileTextFill, RiPrinterFill, RiRefreshLine } from 'react-icons/ri'
 
 const APP_URL = import.meta.env.VITE_APP_URL || window.location.origin
 
@@ -119,13 +120,13 @@ export function GMQRCodesPage() {
               disabled={isGeneratingPdf || players.length === 0}
               className="bg-candle-500 text-night-950 px-4 py-2 rounded-lg font-cinzel font-semibold hover:bg-candle-400 transition-colors disabled:opacity-40"
             >
-              {isGeneratingPdf ? '⏳ Génération...' : '📄 Télécharger PDF'}
+              {isGeneratingPdf ? <><RiHourglassFill className="inline" /> Génération...</> : <><RiFileTextFill className="inline" /> Télécharger PDF</>}
             </button>
             <button
               onClick={() => window.print()}
               className="bg-night-700 hover:bg-night-600 text-parchment-200 py-2 px-4 rounded-lg transition-colors font-crimson border border-night-600"
             >
-              🖨️ Imprimer
+              <RiPrinterFill className="inline" /> Imprimer
             </button>
             <Link to="/gm" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Dashboard</Link>
           </div>
@@ -161,7 +162,7 @@ export function GMQRCodesPage() {
                   onClick={() => regenerateToken(player.id)}
                   className="text-blood-500 hover:text-blood-600 text-sm print:hidden transition-colors font-crimson"
                 >
-                  🔄 Régénérer
+                  <RiRefreshLine className="inline" /> Régénérer
                 </button>
               </div>
             )

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useGameStore } from '../../stores/gameStore'
+import { GiEclipse, GiWolfHead, GiVillage } from 'react-icons/gi'
 
 type RevealStage = 'suspense' | 'revealing' | 'done'
 
@@ -39,7 +40,7 @@ export function RoleRevealPage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-moon-200/5 blur-3xl" />
 
         <div className="text-center animate-candle relative z-10">
-          <p className="text-moon-300/60 text-4xl mb-6">🌑</p>
+          <p className="text-moon-300/60 text-4xl mb-6"><GiEclipse /></p>
           <p className="font-cinzel text-parchment-200/80 text-2xl tracking-wide">
             Ton destin est en train
           </p>
@@ -59,8 +60,8 @@ export function RoleRevealPage() {
   return (
     <div
       className={`min-h-screen flex flex-col items-center justify-center p-6 transition-all duration-1000 relative overflow-hidden ${isWerewolf
-          ? 'bg-gradient-to-b from-blood-900 via-blood-800 to-night-950'
-          : 'bg-gradient-to-b from-night-800 via-night-900 to-forest-900'
+        ? 'bg-gradient-to-b from-blood-900 via-blood-800 to-night-950'
+        : 'bg-gradient-to-b from-night-800 via-night-900 to-forest-900'
         }`}
     >
       {/* Atmospheric glow */}
@@ -68,7 +69,7 @@ export function RoleRevealPage() {
         }`} />
 
       <div className="text-center animate-fade-in-up relative z-10">
-        <div className="text-7xl mb-8">{isWerewolf ? '🐺' : '🏘️'}</div>
+        <div className="flex justify-center text-9xl mb-8">{isWerewolf ? <GiWolfHead /> : <GiVillage />}</div>
 
         <h1 className={`font-cinzel text-4xl font-bold mb-2 tracking-wider ${isWerewolf ? 'text-red-400' : 'text-candle-400'
           }`}>
@@ -98,8 +99,8 @@ export function RoleRevealPage() {
         <button
           onClick={handleDismiss}
           className={`font-cinzel py-3 px-10 rounded-lg font-semibold text-lg transition-all ${isWerewolf
-              ? 'bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 shadow-lg shadow-blood-700/30'
-              : 'bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 shadow-lg shadow-candle-500/20'
+            ? 'bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 shadow-lg shadow-blood-700/30'
+            : 'bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 shadow-lg shadow-candle-500/20'
             }`}
         >
           J'ai compris

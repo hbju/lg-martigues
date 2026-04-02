@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useGameStore } from '../../stores/gameStore'
 import { useAuthStore } from '../../stores/authStore'
 import { motion } from 'framer-motion'
 import type { Player, Elimination, VoteRound, Vote, PowerUp } from '../../types/supabase'
+import { GiWolfHead, GiVillage, GiVote, GiDeathSkull, GiCoffin, GiCrystalBall, GiCheckedShield, GiScrollUnfurled } from 'react-icons/gi'
 
 interface RecapEvent {
   type: 'vote' | 'murder' | 'infection' | 'powerup' | 'challenge'
   timestamp: string
   title: string
   description: string
-  icon: string
+  icon: ReactNode
 }
 
 export function RecapPage() {
@@ -73,7 +74,7 @@ export function RecapPage() {
           timestamp: round.created_at,
           title: round.type === 'final' ? 'Vote Final' : 'Conseil du Village',
           description: `${tallyStr}${elim ? ` → ${getName(elim.player_id)} éliminé(e)` : ''}`,
-          icon: '🗳️',
+          icon: <GiVote />,
         })
       } else if (round.type === 'murder') {
         timeline.push({
@@ -83,7 +84,7 @@ export function RecapPage() {
           description: elim
             ? `Les loups ont tué ${getName(elim.player_id)}`
             : 'Les loups n\'ont pas réussi à se mettre d\'accord',
-          icon: '🐺',
+          icon: <GiWolfHead />,
         })
       }
     }
@@ -98,7 +99,7 @@ export function RecapPage() {
           timestamp: elim.created_at,
           title: elim.method === 'murdered' ? 'Meurtre' : 'Élimination',
           description: `${p.name} a été éliminé(e) (${elim.method})`,
-          icon: elim.method === 'murdered' ? '💀' : '⚰️',
+          icon: elim.method === 'murdered' ? <GiDeathSkull /> : <GiCoffin />,
         })
       }
     }
@@ -112,7 +113,7 @@ export function RecapPage() {
         description: pu.type === 'clairvoyance'
           ? `${getName(pu.player_id)} a regardé le rôle de ${pu.used_on ? getName(pu.used_on) : '???'}`
           : `${getName(pu.player_id)} a été protégé par un bouclier`,
-        icon: pu.type === 'clairvoyance' ? '🔮' : '🛡️',
+        icon: pu.type === 'clairvoyance' ? <GiCrystalBall /> : <GiCheckedShield />,
       })
     }
 
@@ -136,13 +137,13 @@ export function RecapPage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-2">
-            📜 Récapitulatif de la Partie
+          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-2 inline-flex items-center gap-2">
+            <GiScrollUnfurled /> Récapitulatif de la Partie
           </h1>
           {winner && (
             <p className={`font-crimson text-lg italic mb-6 ${winner === 'werewolves' ? 'text-red-400' : 'text-candle-400'
               }`}>
-              {winner === 'werewolves' ? '🐺 Victoire des Loups-Garous' : '🏘️ Victoire des Villageois'}
+              {winner === 'werewolves' ? <><GiWolfHead className="inline" /> Victoire des Loups-Garous</> : <><GiVillage className="inline" /> Victoire des Villageois</>}
             </p>
           )}
         </motion.div>
@@ -156,7 +157,7 @@ export function RecapPage() {
             <div className="space-y-1">
               {survivors.map(p => (
                 <div key={p.id} className="flex items-center gap-2">
-                  <span>{p.role === 'werewolf' ? '🐺' : '🏘️'}</span>
+                  <span>{p.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}</span>
                   <span className="font-crimson text-parchment-200 text-sm">{p.name}</span>
                 </div>
               ))}
@@ -169,7 +170,7 @@ export function RecapPage() {
             <div className="space-y-1">
               {ghosts.map(p => (
                 <div key={p.id} className="flex items-center gap-2 opacity-60">
-                  <span>{p.role === 'werewolf' ? '🐺' : '🏘️'}</span>
+                  <span>{p.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}</span>
                   <span className="font-crimson text-moon-400 text-sm">{p.name}</span>
                 </div>
               ))}
@@ -197,9 +198,9 @@ export function RecapPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
                 className={`bg-parchment-card rounded-xl p-4 backdrop-blur-sm border-l-4 ${event.type === 'murder' ? 'border-l-red-500/60' :
-                    event.type === 'vote' ? 'border-l-candle-500/60' :
-                      event.type === 'powerup' ? 'border-l-purple-500/60' :
-                        'border-l-green-500/60'
+                  event.type === 'vote' ? 'border-l-candle-500/60' :
+                    event.type === 'powerup' ? 'border-l-purple-500/60' :
+                      'border-l-green-500/60'
                   }`}
               >
                 <div className="flex items-start gap-3">

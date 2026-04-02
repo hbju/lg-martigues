@@ -6,6 +6,8 @@ import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { useGameStore } from '../../stores/gameStore'
 import { CountdownTimer } from '../../components/ui/CountdownTimer'
 import type { VoteRound, Vote, Elimination } from '../../types/supabase'
+import { GiVote, GiFinishLine, GiDeathSkull } from 'react-icons/gi'
+import { RiLockFill, RiSearchLine, RiRefreshLine, RiErrorWarningFill, RiAlarmWarningFill } from 'react-icons/ri'
 
 export function GMVotesPage() {
     const { player } = useAuthStore()
@@ -511,7 +513,7 @@ export function GMVotesPage() {
         <div className="min-h-screen bg-village-night p-6">
             <div className="max-w-2xl mx-auto">
                 <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-6">
-                    🗳️ Gestion des Votes
+                    <GiVote className="inline" /> Gestion des Votes
                 </h1>
 
                 {/* Current round status */}
@@ -547,7 +549,7 @@ export function GMVotesPage() {
 
                         {timerExpired && (
                             <div className="bg-blood-800/60 border border-blood-500/50 rounded-lg p-3 mb-4 text-center">
-                                <p className="text-red-300 font-crimson font-semibold">⏰ Le temps est écoulé — Ferme le vote maintenant !</p>
+                                <p className="text-red-300 font-crimson font-semibold"><RiAlarmWarningFill className="inline" /> Le temps est écoulé — Ferme le vote maintenant !</p>
                             </div>
                         )}
 
@@ -556,7 +558,7 @@ export function GMVotesPage() {
                             disabled={isResolving}
                             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isResolving ? 'Résolution en cours...' : '🔒 Fermer le vote et résoudre'}
+                            {isResolving ? 'Résolution en cours...' : <><RiLockFill className="inline" /> Fermer le vote et résoudre</>}
                         </button>
                     </div>
                 ) : (
@@ -583,7 +585,7 @@ export function GMVotesPage() {
                             disabled={isCreating}
                             className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all shadow-lg shadow-candle-500/20"
                         >
-                            {isCreating ? 'Ouverture...' : '🗳️ Ouvrir un vote du Conseil'}
+                            {isCreating ? 'Ouverture...' : <><GiVote className="inline" /> Ouvrir un vote du Conseil</>}
                         </button>
                     </div>
                 )}
@@ -592,7 +594,7 @@ export function GMVotesPage() {
                 {!isFinalVote && alivePlayers.length <= 6 && gameState?.phase === 'playing' && !currentRound?.status && (
                     <div className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-5 mb-6 animate-pulse">
                         <h2 className="font-cinzel text-red-400 font-semibold mb-3 tracking-wider uppercase text-sm">
-                            🗳️ Vote Final disponible
+                            <GiVote className="inline" /> Vote Final disponible
                         </h2>
                         <p className="font-crimson text-parchment-200 mb-4">
                             Il ne reste que <span className="text-candle-400 font-semibold">{alivePlayers.length}</span> joueurs.
@@ -611,7 +613,7 @@ export function GMVotesPage() {
                 {isFinalVote && !currentRound?.status && (
                     <div className="bg-blood-800/10 border border-blood-500/20 rounded-xl p-5 mb-6">
                         <h2 className="font-cinzel text-red-400 font-semibold mb-4 tracking-wider uppercase text-sm">
-                            🗳️ Mode Vote Final
+                            <GiVote className="inline" /> Mode Vote Final
                         </h2>
                         <div className="mb-4">
                             <label className="font-crimson text-moon-400 text-sm block mb-1">
@@ -632,14 +634,14 @@ export function GMVotesPage() {
                                 disabled={isCreating}
                                 className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                             >
-                                {isCreating ? 'Ouverture...' : '🗳️ Ouvrir un vote final'}
+                                {isCreating ? 'Ouverture...' : <><GiVote className="inline" /> Ouvrir un vote final</>}
                             </button>
                             <button
                                 onClick={handleOpenContinuePoll}
                                 disabled={isCreating}
                                 className="w-full bg-night-800 hover:bg-night-700 text-parchment-200 font-crimson py-3 rounded-lg transition-colors border border-night-600"
                             >
-                                {isCreating ? 'Ouverture...' : '🔍 Sondage : Continuer ou Arrêter ?'}
+                                {isCreating ? 'Ouverture...' : <><RiSearchLine className="inline" /> Sondage : Continuer ou Arrêter ?</>}
                             </button>
                         </div>
                     </div>
@@ -664,7 +666,7 @@ export function GMVotesPage() {
                             disabled={isResolving}
                             className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isResolving ? 'Résolution...' : '🔒 Fermer le sondage et résoudre'}
+                            {isResolving ? 'Résolution...' : <><RiLockFill className="inline" /> Fermer le sondage et résoudre</>}
                         </button>
                     </div>
                 )}
@@ -673,20 +675,20 @@ export function GMVotesPage() {
                 {gameState && gameState.phase !== 'setup' && (
                     <div className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 mb-6">
                         <h2 className="font-cinzel text-moon-400/60 font-semibold mb-3 tracking-wider uppercase text-xs">
-                            ⚠️ Actions d'urgence
+                            <RiErrorWarningFill className="inline" /> Actions d'urgence
                         </h2>
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 onClick={handleForceEndGame}
                                 className="bg-blood-800/30 hover:bg-blood-800/50 border border-blood-500/30 text-red-400 font-crimson py-2 px-3 rounded-lg transition-colors text-sm"
                             >
-                                🏁 Fin de partie
+                                <GiFinishLine className="inline" /> Fin de partie
                             </button>
                             <button
                                 onClick={handleResetGame}
                                 className="bg-blood-800/30 hover:bg-blood-800/50 border border-blood-500/30 text-red-400 font-crimson py-2 px-3 rounded-lg transition-colors text-sm"
                             >
-                                🔄 Réinitialiser
+                                <RiRefreshLine className="inline" /> Réinitialiser
                             </button>
                         </div>
                     </div>
@@ -706,7 +708,7 @@ export function GMVotesPage() {
                             disabled={isConfirming}
                             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isConfirming ? 'Confirmation...' : '💀 Confirmer l\'élimination'}
+                            {isConfirming ? 'Confirmation...' : <><GiDeathSkull className="inline" /> Confirmer l'élimination</>}
                         </button>
                     </div>
                 )}

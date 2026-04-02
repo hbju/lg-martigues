@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
+import { GiBeerStein, GiTrophy, GiRollingDices } from 'react-icons/gi'
+import { RiCheckboxCircleFill } from 'react-icons/ri'
 
 interface BracketMatch {
   id: string
@@ -174,7 +176,7 @@ export function GMBeerPongPage() {
         await supabase.from('notifications').insert({
           player_id: member.player_id,
           type: 'shield_gained' as const,
-          title: '🏆 Beer Pong — Victoire !',
+          title: 'Beer Pong — Victoire !',
           message: 'Tu as gagné le tournoi ! Tu reçois un bouclier d\'immunité pour le premier conseil.',
         })
       }
@@ -185,7 +187,7 @@ export function GMBeerPongPage() {
     <div className="min-h-screen bg-village-night p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🍺 Beer Pong (MJ)</h1>
+          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide inline-flex items-center gap-2"><GiBeerStein /> Beer Pong (MJ)</h1>
           <Link to="/gm/challenges" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Challenges</Link>
         </div>
 
@@ -221,7 +223,7 @@ export function GMBeerPongPage() {
                 onClick={handleGenerateBracket}
                 className="w-full bg-gradient-to-b from-candle-500 to-candle-600 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all"
               >
-                🎲 Générer le bracket et lancer le tournoi
+                <GiRollingDices className="inline" /> Générer le bracket et lancer le tournoi
               </button>
             )}
           </>
@@ -232,7 +234,7 @@ export function GMBeerPongPage() {
             {bracket.map((round, roundIdx) => (
               <div key={round.round}>
                 <h2 className="font-cinzel text-candle-400 font-semibold text-sm tracking-wider uppercase mb-3">
-                  {round.round === bracket.length ? '🏆 Finale' : `Tour ${round.round}`}
+                  {round.round === bracket.length ? <><GiTrophy className="inline" /> Finale</> : `Tour ${round.round}`}
                 </h2>
                 <div className="space-y-3">
                   {round.matches.map((match, matchIdx) => (
@@ -266,7 +268,7 @@ export function GMBeerPongPage() {
                         )}
 
                         {match.winner && (
-                          <span className="text-candle-400 font-cinzel text-xs">✅</span>
+                          <span className="text-candle-400 font-cinzel text-xs"><RiCheckboxCircleFill /></span>
                         )}
                       </div>
                     </div>

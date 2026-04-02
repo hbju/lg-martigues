@@ -6,6 +6,7 @@ import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { supabase } from '../../lib/supabase'
 import { NotificationBell } from '../../components/ui/NotificationBell'
 import type { PowerUp, Player } from '../../types/supabase'
+import { GiCheckedShield, GiCrystalBall, GiWolfHead, GiVillage } from 'react-icons/gi'
 
 const sourceLabels: Record<string, string> = {
   qr: 'Trouvé via QR',
@@ -115,12 +116,12 @@ export function InventoryPage() {
         {/* Summary */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-parchment-card rounded-xl p-4 text-center backdrop-blur-sm">
-            <p className="text-3xl mb-1">🛡️</p>
+            <p className="text-3xl mb-1"><GiCheckedShield /></p>
             <p className="text-2xl font-bold text-candle-400 font-cinzel">{unusedShields.length}</p>
             <p className="font-crimson text-moon-400 text-sm">Boucliers</p>
           </div>
           <div className="bg-parchment-card rounded-xl p-4 text-center backdrop-blur-sm">
-            <p className="text-3xl mb-1">🔮</p>
+            <p className="text-3xl mb-1"><GiCrystalBall /></p>
             <p className="text-2xl font-bold text-purple-400 font-cinzel">{unusedClairvoyances.length}</p>
             <p className="font-crimson text-moon-400 text-sm">Clairvoyances</p>
           </div>
@@ -129,7 +130,7 @@ export function InventoryPage() {
         {/* Shields section */}
         <div className="mb-6">
           <h2 className="font-cinzel text-parchment-100 font-semibold text-sm tracking-wider uppercase mb-3">
-            🛡️ Boucliers
+            <GiCheckedShield className="inline" /> Boucliers
           </h2>
           {shields.length === 0 ? (
             <p className="font-crimson text-moon-400/50 text-sm italic">Aucun bouclier. Scanne un QR ou gagne un challenge !</p>
@@ -138,7 +139,7 @@ export function InventoryPage() {
               {shields.map(s => (
                 <div key={s.id} className={`bg-parchment-card rounded-lg p-3 backdrop-blur-sm flex items-center justify-between ${s.used ? 'opacity-50' : ''}`}>
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">🛡️</span>
+                    <span className="text-xl"><GiCheckedShield /></span>
                     <div>
                       <p className="font-cinzel text-parchment-100 text-sm">Bouclier</p>
                       <p className="font-crimson text-moon-400/60 text-xs">{sourceLabels[s.source] ?? s.source}</p>
@@ -161,7 +162,7 @@ export function InventoryPage() {
         {/* Clairvoyance section */}
         <div className="mb-6">
           <h2 className="font-cinzel text-parchment-100 font-semibold text-sm tracking-wider uppercase mb-3">
-            🔮 Clairvoyances
+            <GiCrystalBall className="inline" /> Clairvoyances
           </h2>
           {clairvoyances.length === 0 ? (
             <p className="font-crimson text-moon-400/50 text-sm italic">Aucune clairvoyance. Scanne un QR ou gagne un challenge !</p>
@@ -170,13 +171,13 @@ export function InventoryPage() {
               {clairvoyances.map(c => (
                 <div key={c.id} className={`bg-parchment-card rounded-lg p-3 backdrop-blur-sm flex items-center justify-between ${c.used ? 'opacity-50' : ''}`}>
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">🔮</span>
+                    <span className="text-xl"><GiCrystalBall /></span>
                     <div>
                       <p className="font-cinzel text-parchment-100 text-sm">Clairvoyance</p>
                       <p className="font-crimson text-moon-400/60 text-xs">{sourceLabels[c.source] ?? c.source}</p>
                       {c.used && c.metadata && (c.metadata as Record<string, string>).result && (
                         <p className={`font-crimson text-xs mt-0.5 font-semibold ${(c.metadata as Record<string, string>).result === 'werewolf' ? 'text-red-400' : 'text-candle-400'}`}>
-                          Résultat : {(c.metadata as Record<string, string>).result === 'werewolf' ? '🐺 Loup-Garou' : '🏘️ Villageois'}
+                          Résultat : {(c.metadata as Record<string, string>).result === 'werewolf' ? <><GiWolfHead className="inline" /> Loup-Garou</> : <><GiVillage className="inline" /> Villageois</>}
                         </p>
                       )}
                     </div>
@@ -204,7 +205,7 @@ export function InventoryPage() {
             <div className="fixed inset-0 bg-black/60 z-40" onClick={() => setShowClairvoyanceModal(false)} />
             <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 bg-night-800 border border-night-600 rounded-xl p-5 z-50 max-w-sm mx-auto max-h-[80vh] overflow-y-auto">
               <h3 className="font-cinzel text-parchment-100 font-semibold tracking-wider mb-4">
-                🔮 Choisir une cible
+                <GiCrystalBall className="inline" /> Choisir une cible
               </h3>
               <p className="font-crimson text-moon-400 text-sm mb-4 italic">
                 Sélectionne un joueur pour révéler son rôle.

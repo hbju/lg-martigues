@@ -5,6 +5,8 @@ import { useGameStore } from '../../stores/gameStore'
 import { useAuthStore } from '../../stores/authStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Player } from '../../types/supabase'
+import { GiWolfHead, GiVillage, GiMoon, GiFire, GiScrollUnfurled, GiScales } from 'react-icons/gi'
+import { RiQuestionFill } from 'react-icons/ri'
 
 export function FinalRevealPage() {
   const { gameState, fetchGameState, subscribeToGameState } = useGameStore()
@@ -65,10 +67,10 @@ export function FinalRevealPage() {
     <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Background effect */}
       <div className={`absolute inset-0 transition-all duration-1000 ${showWinner
-          ? werewolvesWin
-            ? 'bg-gradient-to-b from-blood-900/30 via-night-950 to-blood-900/20'
-            : 'bg-gradient-to-b from-candle-600/15 via-night-950 to-candle-600/10'
-          : ''
+        ? werewolvesWin
+          ? 'bg-gradient-to-b from-blood-900/30 via-night-950 to-blood-900/20'
+          : 'bg-gradient-to-b from-candle-600/15 via-night-950 to-candle-600/10'
+        : ''
         }`} />
 
       <div className="text-center relative z-10 max-w-2xl w-full">
@@ -77,8 +79,8 @@ export function FinalRevealPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-cinzel text-3xl font-bold text-parchment-100 tracking-[0.2em] mb-2">
-            🎭 Révélation Finale
+          <h1 className="font-cinzel text-3xl font-bold text-parchment-100 tracking-[0.2em] mb-2 inline-flex items-center gap-3">
+            <GiScales /> Révélation Finale
           </h1>
           <p className="font-crimson text-moon-400 italic mb-10">
             Les masques tombent...
@@ -100,10 +102,10 @@ export function FinalRevealPage() {
                   }
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   className={`rounded-xl p-4 text-center border-2 transition-colors duration-500 ${isRevealed
-                      ? p.role === 'werewolf'
-                        ? 'bg-blood-800/60 border-red-500/60'
-                        : 'bg-candle-600/20 border-candle-500/40'
-                      : 'bg-night-800/50 border-night-700/30'
+                    ? p.role === 'werewolf'
+                      ? 'bg-blood-800/60 border-red-500/60'
+                      : 'bg-candle-600/20 border-candle-500/40'
+                    : 'bg-night-800/50 border-night-700/30'
                     }`}
                   style={{ perspective: '1000px' }}
                 >
@@ -117,7 +119,7 @@ export function FinalRevealPage() {
                       transition={{ delay: 0.3 }}
                     >
                       <span className="text-2xl">
-                        {p.role === 'werewolf' ? '🐺' : '🏘️'}
+                        {p.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}
                       </span>
                       <p className={`font-crimson text-sm mt-1 ${p.role === 'werewolf' ? 'text-red-400' : 'text-candle-400'
                         }`}>
@@ -125,7 +127,7 @@ export function FinalRevealPage() {
                       </p>
                     </motion.div>
                   ) : (
-                    <span className="text-2xl">❓</span>
+                    <span className="text-2xl"><RiQuestionFill /></span>
                   )}
                 </motion.div>
               )
@@ -142,8 +144,8 @@ export function FinalRevealPage() {
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               className="mb-8"
             >
-              <div className={`text-6xl mb-4 ${werewolvesWin ? 'animate-pulse' : ''}`}>
-                {werewolvesWin ? '🐺🌕' : '🏘️🔥'}
+              <div className={`text-6xl mb-4 flex items-center justify-center gap-2 ${werewolvesWin ? 'animate-pulse' : ''}`}>
+                {werewolvesWin ? <><GiWolfHead /><GiMoon /></> : <><GiVillage /><GiFire /></>}
               </div>
               <h2 className={`font-cinzel text-4xl font-bold tracking-wider mb-3 ${werewolvesWin ? 'text-red-400' : 'text-candle-400'
                 }`}>
@@ -174,7 +176,7 @@ export function FinalRevealPage() {
               onClick={() => navigate('/recap')}
               className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all shadow-lg shadow-candle-500/20"
             >
-              📜 Voir le récapitulatif
+              <GiScrollUnfurled className="inline" /> Voir le récapitulatif
             </button>
             <button
               onClick={() => navigate('/home')}

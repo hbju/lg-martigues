@@ -1,21 +1,23 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useNotificationStore } from '../../stores/notificationStore'
 import { useAuthStore } from '../../stores/authStore'
 import { formatDistanceToNow } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { GiScales, GiVote, GiDeathSkull, GiWolfHead, GiBloodySword, GiBiohazard, GiCheckedShield, GiCrystalBall } from 'react-icons/gi'
+import { RiBarChartBoxFill, RiEyeFill, RiMegaphoneFill, RiBellFill } from 'react-icons/ri'
 
-const typeIcons: Record<string, string> = {
-    role_assigned: '🎭',
-    vote_open: '🗳️',
-    vote_result: '📊',
-    eliminated: '💀',
-    murder_window: '🐺',
-    murder_result: '🔪',
-    infected: '🦠',
-    shield_gained: '🛡️',
-    clairvoyance_gained: '🔮',
-    clairvoyance_result: '👁️',
-    generic: '📢',
+const typeIcons: Record<string, ReactNode> = {
+    role_assigned: <GiScales />,
+    vote_open: <GiVote />,
+    vote_result: <RiBarChartBoxFill />,
+    eliminated: <GiDeathSkull />,
+    murder_window: <GiWolfHead />,
+    murder_result: <GiBloodySword />,
+    infected: <GiBiohazard />,
+    shield_gained: <GiCheckedShield />,
+    clairvoyance_gained: <GiCrystalBall />,
+    clairvoyance_result: <RiEyeFill />,
+    generic: <RiMegaphoneFill />,
 }
 
 interface NotificationBellProps {
@@ -34,7 +36,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative text-moon-400 hover:text-candle-400 transition-colors text-xl"
             >
-                🔔
+                <RiBellFill />
                 {unreadCount > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 bg-blood-500 text-parchment-50 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center font-cinzel">
                         {unreadCount > 9 ? '9+' : unreadCount}
@@ -80,7 +82,7 @@ export function NotificationBell({ className = '' }: NotificationBellProps) {
                                             }`}
                                     >
                                         <div className="flex items-start gap-2.5">
-                                            <span className="text-base flex-shrink-0 mt-0.5">{typeIcons[n.type] ?? '📢'}</span>
+                                            <span className="text-base flex-shrink-0 mt-0.5">{typeIcons[n.type] ?? <RiMegaphoneFill />}</span>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
                                                     <p className="font-cinzel text-parchment-100 text-xs font-semibold tracking-wide truncate">

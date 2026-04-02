@@ -7,6 +7,8 @@ import { useAuthStore } from '../../stores/authStore'
 import { useNotificationStore } from '../../stores/notificationStore'
 import { NotificationBell } from '../../components/ui/NotificationBell'
 import type { GameState, Player } from '../../types/supabase'
+import { GiWolfHead, GiVillage, GiVote, GiBiohazard, GiCheckedShield, GiTrophy, GiRollingDices, GiFinishLine, GiScales, GiGamepadCross, GiDeathSkull, GiNightSleep, GiHealthNormal } from 'react-icons/gi'
+import { RiQrCodeFill, RiMegaphoneFill, RiTvFill, RiGiftFill, RiCheckboxCircleFill, RiPlayFill, RiErrorWarningFill } from 'react-icons/ri'
 
 export function GMDashboardPage() {
   const { players } = useRealtimePlayers()
@@ -72,15 +74,6 @@ export function GMDashboardPage() {
       })
       .eq('id', 1)
 
-    // Send role assignment notifications
-    const notifs = shuffled.map(p => ({
-      player_id: p.id,
-      type: 'role_assigned' as const,
-      title: 'Rôle assigné',
-      message: 'Ton rôle a été attribué. Consulte-le maintenant !',
-    }))
-    await supabase.from('notifications').insert(notifs)
-
     setIsAssigning(false)
     setShowRoles(true)
   }
@@ -104,12 +97,12 @@ export function GMDashboardPage() {
       .eq('id', 1)
   }
 
-  const phaseLabels: Record<string, string> = {
-    setup: '🔧 Préparation',
-    role_reveal: '🎭 Révélation des rôles',
-    playing: '🎮 En cours',
-    final_vote: '🗳️ Vote final',
-    finished: '🏁 Terminé',
+  const phaseLabels: Record<string, { icon: React.ReactNode; label: string }> = {
+    setup: { icon: <GiRollingDices />, label: 'Préparation' },
+    role_reveal: { icon: <GiScales />, label: 'Révélation des rôles' },
+    playing: { icon: <GiGamepadCross />, label: 'En cours' },
+    final_vote: { icon: <GiVote />, label: 'Vote final' },
+    finished: { icon: <GiFinishLine />, label: 'Terminé' },
   }
 
   return (
@@ -125,7 +118,7 @@ export function GMDashboardPage() {
               to="/gm/qr-codes"
               className="bg-night-700 hover:bg-night-600 text-parchment-200 py-2 px-4 rounded-lg transition-colors font-crimson border border-night-600"
             >
-              📱 QR Codes
+              <RiQrCodeFill className="inline" /> QR Codes
             </Link>
           </div>
         </div>
@@ -133,8 +126,8 @@ export function GMDashboardPage() {
         {/* Game phase */}
         <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
           <p className="font-crimson text-moon-400 text-sm italic">Phase actuelle</p>
-          <p className="font-cinzel text-candle-400 text-xl font-semibold mt-1">
-            {gameState ? phaseLabels[gameState.phase] || gameState.phase : 'Chargement...'}
+          <p className="font-cinzel text-candle-400 text-xl font-semibold mt-1 inline-flex items-center gap-2">
+            {gameState ? (phaseLabels[gameState.phase] ? <>{phaseLabels[gameState.phase].icon} {phaseLabels[gameState.phase].label}</> : gameState.phase) : 'Chargement...'}
           </p>
         </div>
 
@@ -145,14 +138,14 @@ export function GMDashboardPage() {
               to="/gm/votes"
               className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 text-center hover:bg-candle-600/30 transition-colors"
             >
-              <div className="text-2xl mb-1">🗳️</div>
+              <div className="text-2xl mb-1"><GiVote /></div>
               <p className="font-cinzel text-candle-400 text-sm font-semibold">Votes</p>
             </Link>
             <Link
               to="/gm/murder"
               className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-4 text-center hover:bg-blood-800/30 transition-colors"
             >
-              <div className="text-2xl mb-1">🐺</div>
+              <div className="text-2xl mb-1"><GiWolfHead /></div>
               <p className="font-cinzel text-red-400 text-sm font-semibold">Meurtres</p>
             </Link>
             <Link
@@ -162,16 +155,16 @@ export function GMDashboardPage() {
                 : 'bg-night-800/30 border-night-700/30 hover:bg-night-800/40'
                 }`}
             >
-              <div className="text-2xl mb-1">🦠</div>
+              <div className="text-2xl mb-1"><GiBiohazard /></div>
               <p className={`font-cinzel text-sm font-semibold ${infectionPending ? 'text-red-400' : 'text-moon-400'}`}>
-                Infection {infectionPending && '⚠️'}
+                Infection {infectionPending && <RiErrorWarningFill className="inline" />}
               </p>
             </Link>
             <Link
               to="/gm/broadcast"
               className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
             >
-              <div className="text-2xl mb-1">📢</div>
+              <div className="text-2xl mb-1"><RiMegaphoneFill /></div>
               <p className="font-cinzel text-moon-400 text-sm font-semibold">Annonce</p>
             </Link>
           </div>
@@ -183,42 +176,42 @@ export function GMDashboardPage() {
             to="/gm/power-ups"
             className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 text-center hover:bg-purple-900/30 transition-colors"
           >
-            <div className="text-2xl mb-1">🛡️</div>
+            <div className="text-2xl mb-1"><GiCheckedShield /></div>
             <p className="font-cinzel text-purple-400 text-sm font-semibold">Power-ups</p>
           </Link>
           <Link
             to="/gm/reward-qr"
             className="bg-candle-600/10 border border-candle-500/20 rounded-xl p-4 text-center hover:bg-candle-600/20 transition-colors"
           >
-            <div className="text-2xl mb-1">🎁</div>
+            <div className="text-2xl mb-1"><RiGiftFill /></div>
             <p className="font-cinzel text-candle-400 text-sm font-semibold">QR Rewards</p>
           </Link>
           <Link
             to="/gm/challenges"
             className="bg-forest-700/20 border border-green-800/30 rounded-xl p-4 text-center hover:bg-forest-700/30 transition-colors"
           >
-            <div className="text-2xl mb-1">🏆</div>
+            <div className="text-2xl mb-1"><GiTrophy /></div>
             <p className="font-cinzel text-green-400 text-sm font-semibold">Challenges</p>
           </Link>
           <Link
             to="/tv"
             className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
           >
-            <div className="text-2xl mb-1">📺</div>
+            <div className="text-2xl mb-1"><RiTvFill /></div>
             <p className="font-cinzel text-moon-400 text-sm font-semibold">TV View</p>
           </Link>
           <Link
             to="/gm/checklist"
             className="bg-forest-700/10 border border-green-800/20 rounded-xl p-4 text-center hover:bg-forest-700/20 transition-colors"
           >
-            <div className="text-2xl mb-1">✅</div>
+            <div className="text-2xl mb-1"><RiCheckboxCircleFill /></div>
             <p className="font-cinzel text-green-400 text-sm font-semibold">Checklist</p>
           </Link>
           <Link
             to="/gm/health"
             className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
           >
-            <div className="text-2xl mb-1">🏥</div>
+            <div className="text-2xl mb-1"><GiHealthNormal /></div>
             <p className="font-cinzel text-moon-400 text-sm font-semibold">Diagnostic</p>
           </Link>
         </div>
@@ -243,7 +236,7 @@ export function GMDashboardPage() {
                   : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
                   }`}
               >
-                {discoveryConfirmed ? '✅ Confirmée' : 'Confirmer'}
+                {discoveryConfirmed ? <><RiCheckboxCircleFill className="inline" /> Confirmée</> : 'Confirmer'}
               </button>
             </div>
           </div>
@@ -278,7 +271,7 @@ export function GMDashboardPage() {
                   {showRoles && p.role && (
                     <span className={`text-sm px-2 py-0.5 rounded font-crimson ${p.role === 'werewolf' ? 'bg-blood-800/60 text-red-300 border border-blood-500/30' : 'bg-candle-600/20 text-candle-400 border border-candle-500/20'
                       }`}>
-                      {p.role === 'werewolf' ? '🐺 Loup' : '🏘️ Villageois'}
+                      {p.role === 'werewolf' ? <><GiWolfHead className="inline" /> Loup</> : <><GiVillage className="inline" /> Villageois</>}
                     </span>
                   )}
                   <span className="text-moon-400/50 text-xs font-crimson italic">{p.status}</span>
@@ -328,7 +321,7 @@ export function GMDashboardPage() {
                 disabled={!canStart || isAssigning}
                 className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 disabled:from-night-700 disabled:to-night-700 disabled:text-night-600 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all shadow-lg shadow-candle-500/20"
               >
-                {isAssigning ? 'Attribution en cours...' : `🎲 Assigner les rôles (${players.length} joueurs)`}
+                {isAssigning ? 'Attribution en cours...' : <><GiRollingDices className="inline" /> Assigner les rôles ({players.length} joueurs)</>}
               </button>
 
               {!canStart && (
@@ -347,7 +340,7 @@ export function GMDashboardPage() {
               onClick={handleAdvanceToPlaying}
               className="w-full bg-gradient-to-b from-forest-700 to-forest-800 hover:from-forest-700/90 hover:to-forest-700 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all border border-green-800/30"
             >
-              ▶️ Passer en mode Jeu
+              <RiPlayFill className="inline" /> Passer en mode Jeu
             </button>
           </div>
         )}
@@ -425,7 +418,7 @@ function TVControl({ gameState, players }: { gameState: GameState | null; player
   return (
     <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
       <h2 className="font-cinzel text-parchment-100 font-semibold mb-3 text-sm tracking-wider uppercase">
-        📺 Contrôle TV
+        <RiTvFill className="inline" /> Contrôle TV
       </h2>
 
       <div className="grid grid-cols-2 gap-2 mb-3">
@@ -433,25 +426,25 @@ function TVControl({ gameState, players }: { gameState: GameState | null; player
           onClick={() => setTVScene('idle')}
           className="bg-night-800/50 border border-night-700/30 rounded-lg py-2 px-3 text-sm font-crimson text-parchment-200 hover:bg-night-800/70 transition-colors"
         >
-          🌙 Écran veille
+          <GiNightSleep className="inline" /> Écran veille
         </button>
         <button
           onClick={handleMurderAnnouncement}
           className="bg-blood-800/30 border border-blood-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-red-300 hover:bg-blood-800/40 transition-colors"
         >
-          💀 Annonce meurtre
+          <GiDeathSkull className="inline" /> Annonce meurtre
         </button>
         <button
           onClick={handleLeaderboard}
           className="bg-candle-600/20 border border-candle-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-candle-400 hover:bg-candle-600/30 transition-colors"
         >
-          🏆 Classement
+          <GiTrophy className="inline" /> Classement
         </button>
         <button
           onClick={() => setTVScene('final_reveal')}
           className="bg-purple-900/30 border border-purple-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-purple-300 hover:bg-purple-900/40 transition-colors"
         >
-          🎭 Révélation finale
+          <GiScales className="inline" /> Révélation finale
         </button>
       </div>
 
@@ -468,7 +461,7 @@ function TVControl({ gameState, players }: { gameState: GameState | null; player
           disabled={!customMessage.trim()}
           className="bg-candle-600/20 border border-candle-500/30 rounded-lg py-2 px-3 text-sm font-crimson text-candle-400 hover:bg-candle-600/30 transition-colors disabled:opacity-40"
         >
-          📢
+          <RiMegaphoneFill />
         </button>
       </div>
     </div>

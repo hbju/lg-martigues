@@ -7,6 +7,8 @@ import { useNotificationStore } from '../../stores/notificationStore'
 import { NotificationBell } from '../../components/ui/NotificationBell'
 import { EliminationOverlay } from '../../components/ui/EliminationOverlay'
 import { useChallengeStore } from '../../stores/challengeStore'
+import { GiGhost, GiWolfHead, GiVillage, GiBackpack, GiBeerStein, GiTestTubes, GiTrophy } from 'react-icons/gi'
+import { RiHeartFill, RiHourglassFill, RiCameraFill } from 'react-icons/ri'
 
 export function HomePage() {
   const { player, logout, refreshPlayer } = useAuthStore()
@@ -81,9 +83,8 @@ export function HomePage() {
   }
 
   const beerPong = challenges.find(c => c.type === 'beer_pong')
-  const pubCrawl = challenges.find(c => c.type === 'pub_crawl')
   const madScientists = challenges.find(c => c.type === 'mad_scientists')
-  console.log("Available challenges on HomePage:", { beerPong, pubCrawl, madScientists })
+  console.log("Available challenges on HomePage:", { beerPong, madScientists })
 
   useEffect(() => {
     const unsub = subscribeToAll()
@@ -106,7 +107,7 @@ export function HomePage() {
           <div>
             <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
               {player.name}
-              {isGhost && <span className="ml-2 text-lg">👻</span>}
+              {isGhost && <span className="ml-2 text-lg"><GiGhost className="inline" /></span>}
             </h1>
             <p className="font-crimson text-moon-400 text-sm italic">
               {gameState ? phaseLabels[gameState.phase] || gameState.phase : '...'}
@@ -118,7 +119,7 @@ export function HomePage() {
         {/* Ghost badge */}
         {isGhost && (
           <div className="bg-night-800/60 border border-night-600/50 rounded-xl p-4 mb-6 text-center">
-            <p className="font-cinzel text-moon-400/60 tracking-wider text-sm">👻 Tu es un Fantôme</p>
+            <p className="font-cinzel text-moon-400/60 tracking-wider text-sm"><GiGhost className="inline" /> Tu es un Fantôme</p>
             <p className="font-crimson text-moon-400/40 text-xs mt-1 italic">
               Tu observes le jeu, mais ne peux plus voter.
             </p>
@@ -128,13 +129,13 @@ export function HomePage() {
         {/* Role card */}
         <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{player.role === 'werewolf' ? '🐺' : '🏘️'}</span>
+            <span className="text-2xl">{player.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}</span>
             <div>
               <p className="font-cinzel text-parchment-100 font-medium tracking-wide">
                 {player.role === 'werewolf' ? 'Loup-Garou' : 'Villageois'}
               </p>
               <p className="font-crimson text-moon-400 text-sm italic">
-                {player.status === 'alive' ? '❤️ En vie' : player.status === 'ghost' ? '👻 Éliminé' : '⏳ En attente'}
+                {player.status === 'alive' ? <><RiHeartFill className="inline text-red-400" /> En vie</> : player.status === 'ghost' ? <><GiGhost className="inline" /> Éliminé</> : <><RiHourglassFill className="inline" /> En attente</>}
               </p>
             </div>
           </div>
@@ -147,7 +148,7 @@ export function HomePage() {
             className="w-full bg-blood-800/30 border border-blood-500/30 rounded-xl p-4 mb-6 text-left hover:bg-blood-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <span className="text-xl">🐺</span>
+              <span className="text-xl"><GiWolfHead /></span>
               <div>
                 <p className="font-cinzel text-red-400 font-medium text-sm tracking-wide">Tanière des Loups</p>
                 <p className="font-crimson text-red-300/60 text-xs">Accéder au canal privé</p>
@@ -199,7 +200,7 @@ export function HomePage() {
             to="/inventory"
             className="bg-parchment-card rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors backdrop-blur-sm"
           >
-            <div className="text-2xl mb-1">🎒</div>
+            <div className="flex justify-center text-2xl mb-1"><GiBackpack /></div>
             <p className="font-cinzel text-candle-400 text-sm font-semibold">Inventaire</p>
             <p className="font-crimson text-moon-400/60 text-xs">Boucliers & Clairvoyances</p>
           </Link>
@@ -207,7 +208,7 @@ export function HomePage() {
             to="/scan"
             className="bg-parchment-card rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors backdrop-blur-sm"
           >
-            <div className="text-2xl mb-1">📷</div>
+            <div className="flex justify-center text-2xl mb-1"><RiCameraFill /></div>
             <p className="font-cinzel text-candle-400 text-sm font-semibold">Scanner QR</p>
             <p className="font-crimson text-moon-400/60 text-xs">Trouver des récompenses</p>
           </Link>
@@ -217,7 +218,7 @@ export function HomePage() {
         {challenges.length > 0 && (
           <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
             <h2 className="font-cinzel text-parchment-100 font-semibold mb-3 text-sm tracking-wider uppercase">
-              🏆 Challenges
+              <GiTrophy className="inline" /> Challenges
             </h2>
             <div className="space-y-2">
               {beerPong && (
@@ -225,23 +226,15 @@ export function HomePage() {
                   to="/challenges/beer-pong"
                   className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
                 >
-                  <span className="text-lg">🍺</span>
+                  <span className="text-lg"><GiBeerStein /></span>
                   <span className="font-crimson text-parchment-200 text-sm">Beer Pong</span>
-                </Link>)}
-              {pubCrawl && (
-                <Link
-                  to="/challenges/pub-crawl"
-                  className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
-                >
-                  <span className="text-lg">🍻</span>
-                  <span className="font-crimson text-parchment-200 text-sm">Barathon</span>
                 </Link>)}
               {madScientists && (
                 <Link
                   to="/challenges/mad-scientists"
                   className="flex items-center gap-3 p-3 bg-night-800/50 border border-night-700/30 rounded-lg hover:bg-night-800/70 transition-colors"
                 >
-                  <span className="text-lg">🧪</span>
+                  <span className="text-lg"><GiTestTubes /></span>
                   <span className="font-crimson text-parchment-200 text-sm">Savants Fous</span>
                 </Link>)}
             </div>

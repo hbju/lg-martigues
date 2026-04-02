@@ -4,6 +4,8 @@ import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { Leaderboard } from '../../components/Leaderboard'
+import { GiTestTubes, GiRunningNinja } from 'react-icons/gi'
+import { RiHourglassFill } from 'react-icons/ri'
 
 export function MadScientistsPage() {
   const { player } = useAuthStore()
@@ -55,7 +57,7 @@ export function MadScientistsPage() {
   if (!challenge) {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-        <div className="text-5xl mb-4">🧪</div>
+        <div className="text-5xl mb-4"><GiTestTubes /></div>
         <p className="font-cinzel text-parchment-100 text-xl mb-2">Savants Fous</p>
         <p className="font-crimson text-moon-400 italic">Le challenge n'a pas encore été créé par le MJ.</p>
         <button onClick={() => navigate('/home')} className="mt-4 text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Retour</button>
@@ -68,7 +70,7 @@ export function MadScientistsPage() {
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🧪 Savants Fous</h1>
+            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide inline-flex items-center gap-2"><GiTestTubes /> Savants Fous</h1>
             <p className="font-crimson text-moon-400 text-sm italic">
               Manche {currentRound} / {totalRounds}
               {challenge.status === 'completed' && ' — Terminé'}
@@ -83,7 +85,7 @@ export function MadScientistsPage() {
             ? 'bg-purple-900/30 border-purple-500/40'
             : 'bg-candle-600/10 border-candle-500/30'
             }`}>
-            <div className="text-4xl mb-3">{myRole === 'scientist' ? '🧪' : '🏃'}</div>
+            <div className="text-4xl mb-3">{myRole === 'scientist' ? <GiTestTubes /> : <GiRunningNinja />}</div>
             <p className={`font-cinzel text-xl font-bold tracking-wider ${myRole === 'scientist' ? 'text-purple-300' : 'text-candle-400'
               }`}>
               {myRole === 'scientist' ? 'Savant Fou' : 'Citoyen'}
@@ -99,7 +101,7 @@ export function MadScientistsPage() {
         {challenge.status === 'active' && currentRound > 0 && !myRole && (
           <div className="bg-night-800/30 border border-night-700/30 border-dashed rounded-xl p-4 mb-6 text-center">
             <p className="font-crimson text-moon-400/50 text-sm italic animate-pulse">
-              ⏳ En attente de l'attribution des rôles...
+              <RiHourglassFill className="inline" /> En attente de l'attribution des rôles...
             </p>
           </div>
         )}
@@ -107,7 +109,7 @@ export function MadScientistsPage() {
         {challenge.status === 'active' && currentRound === 0 && (
           <div className="bg-night-800/30 border border-night-700/30 border-dashed rounded-xl p-4 mb-6 text-center">
             <p className="font-crimson text-moon-400/50 text-sm italic">
-              ⏳ En attente du début de la première manche...
+              <RiHourglassFill className="inline" /> En attente du début de la première manche...
             </p>
           </div>
         )}

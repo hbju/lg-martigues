@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import type { Challenge, QrCode } from '../../types/supabase'
+import { RiCheckboxCircleFill, RiCheckboxBlankLine } from 'react-icons/ri'
 
 interface ChecklistItem {
   label: string
@@ -30,7 +31,6 @@ export function GMChecklistPage() {
 
   const nonGmPlayers = players.filter(p => !p.is_gm)
   const beerPong = challenges.find(c => c.type === 'beer_pong')
-  const pubCrawl = challenges.find(c => c.type === 'pub_crawl')
   const madScientists = challenges.find(c => c.type === 'mad_scientists')
 
   // Determine werewolf meeting point from game_state metadata
@@ -68,11 +68,6 @@ export function GMChecklistPage() {
       link: '/gm/challenges/beer-pong',
     },
     {
-      label: 'Équipes et routes du Barathon configurées',
-      checked: !!pubCrawl,
-      link: '/gm/challenges/pub-crawl',
-    },
-    {
       label: 'Challenge Savants Fous créé',
       checked: !!madScientists,
       link: '/gm/challenges/mad-scientists',
@@ -96,7 +91,7 @@ export function GMChecklistPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
-            ✅ Checklist Pré-Événement
+            <RiCheckboxCircleFill className="inline" /> Checklist Pré-Événement
           </h1>
           <Link
             to="/gm"
@@ -129,7 +124,7 @@ export function GMChecklistPage() {
                 }`}
             >
               <span className="text-xl flex-shrink-0">
-                {item.checked ? '✅' : '⬜'}
+                {item.checked ? <RiCheckboxCircleFill /> : <RiCheckboxBlankLine />}
               </span>
               <div className="flex-1">
                 <p className={`font-crimson ${item.checked ? 'text-parchment-200 line-through opacity-60' : 'text-parchment-100'

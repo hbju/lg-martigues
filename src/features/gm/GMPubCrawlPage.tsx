@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useChallengeStore } from '../../stores/challengeStore'
+import { GiBeerStein, GiCheckedShield } from 'react-icons/gi'
+import { RiCloseCircleFill, RiErrorWarningFill, RiPlayFill } from 'react-icons/ri'
 
 export function GMPubCrawlPage() {
   const { challenges, teams, teamMembers, scores, subscribeToAll, subscribeToChallenge } = useChallengeStore()
@@ -79,7 +81,7 @@ export function GMPubCrawlPage() {
       await supabase.from('notifications').insert({
         player_id: m.player_id,
         type: 'challenge_update' as const,
-        title: '🎯 Destination révélée !',
+        title: 'Destination révélée !',
         message: 'La destination finale du pub crawl a été débloquée. Regarde ton itinéraire !',
       })
     }
@@ -107,7 +109,7 @@ export function GMPubCrawlPage() {
       await supabase.from('notifications').insert({
         player_id: m.player_id,
         type: 'shield_gained' as const,
-        title: '🛡️ Bouclier gagné !',
+        title: 'Bouclier gagné !',
         message: 'Votre équipe est arrivée en premier au pub crawl ! Vous recevez un bouclier.',
       })
     }
@@ -135,7 +137,7 @@ export function GMPubCrawlPage() {
     <div className="min-h-screen bg-village-night p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🍻 Pub Crawl (MJ)</h1>
+          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide"><GiBeerStein className="inline" /> Pub Crawl (MJ)</h1>
           <Link to="/gm/challenges" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Challenges</Link>
         </div>
 
@@ -187,7 +189,7 @@ export function GMPubCrawlPage() {
               disabled={challengeTeams.length < 2}
               className="w-full bg-gradient-to-b from-candle-500 to-candle-600 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all disabled:opacity-40"
             >
-              ▶️ Lancer le Pub Crawl
+              <RiPlayFill className="inline" /> Lancer le Pub Crawl
             </button>
           </div>
         )}
@@ -205,7 +207,7 @@ export function GMPubCrawlPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <p className="font-cinzel text-parchment-100 font-semibold text-sm">{team.name}</p>
-                      <p className="font-crimson text-moon-400/60 text-xs">Indices : {clues} / {clueThreshold} {hasPenalty && '⚠️ Pénalité'}</p>
+                      <p className="font-crimson text-moon-400/60 text-xs">Indices : {clues} / {clueThreshold} {hasPenalty && <><RiErrorWarningFill className="inline" /> Pénalité</>}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -231,7 +233,7 @@ export function GMPubCrawlPage() {
                       onClick={() => handleGrantShieldsToFirst(team.id)}
                       className="bg-candle-600/20 border border-candle-500/30 text-candle-400 px-3 py-1.5 rounded-lg text-xs font-crimson hover:bg-candle-500/30 transition-colors"
                     >
-                      🛡️ Shields
+                      <GiCheckedShield className="inline" /> Shields
                     </button>
                     <button
                       onClick={() => handleTogglePenalty(team.id)}
@@ -240,7 +242,7 @@ export function GMPubCrawlPage() {
                         : 'bg-night-700 border-night-600 text-moon-400 hover:bg-night-600'
                         }`}
                     >
-                      {hasPenalty ? '❌ Retirer pénalité' : '⚠️ Pénalité'}
+                      {hasPenalty ? <><RiCloseCircleFill className="inline" /> Retirer pénalité</> : <><RiErrorWarningFill className="inline" /> Pénalité</>}
                     </button>
                   </div>
                 </div>

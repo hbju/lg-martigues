@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { Notification } from '../../types/supabase'
+import { GiScales, GiVote, GiDeathSkull, GiWolfHead, GiBloodySword, GiBiohazard, GiCheckedShield, GiCrystalBall } from 'react-icons/gi'
+import { RiBarChartBoxFill, RiEyeFill, RiMegaphoneFill } from 'react-icons/ri'
 
 interface ToastProps {
     notification: Notification
@@ -7,18 +9,18 @@ interface ToastProps {
     onTap?: () => void
 }
 
-const typeIcons: Record<string, string> = {
-    role_assigned: '🎭',
-    vote_open: '🗳️',
-    vote_result: '📊',
-    eliminated: '💀',
-    murder_window: '🐺',
-    murder_result: '🔪',
-    infected: '🦠',
-    shield_gained: '🛡️',
-    clairvoyance_gained: '🔮',
-    clairvoyance_result: '👁️',
-    generic: '📢',
+const typeIcons: Record<string, ReactNode> = {
+    role_assigned: <GiScales />,
+    vote_open: <GiVote />,
+    vote_result: <RiBarChartBoxFill />,
+    eliminated: <GiDeathSkull />,
+    murder_window: <GiWolfHead />,
+    murder_result: <GiBloodySword />,
+    infected: <GiBiohazard />,
+    shield_gained: <GiCheckedShield />,
+    clairvoyance_gained: <GiCrystalBall />,
+    clairvoyance_result: <RiEyeFill />,
+    generic: <RiMegaphoneFill />,
 }
 
 export function Toast({ notification, onDismiss, onTap }: ToastProps) {
@@ -44,7 +46,7 @@ export function Toast({ notification, onDismiss, onTap }: ToastProps) {
         >
             <div className="bg-night-800/95 border border-candle-500/30 rounded-xl p-4 backdrop-blur-sm shadow-lg shadow-black/30 max-w-md mx-auto">
                 <div className="flex items-start gap-3">
-                    <span className="text-xl flex-shrink-0">{typeIcons[notification.type] ?? '📢'}</span>
+                    <span className="text-xl flex-shrink-0">{typeIcons[notification.type] ?? <RiMegaphoneFill />}</span>
                     <div className="flex-1 min-w-0">
                         <p className="font-cinzel text-parchment-100 text-sm font-semibold tracking-wide">
                             {notification.title}

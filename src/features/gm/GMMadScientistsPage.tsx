@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useChallengeStore } from '../../stores/challengeStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { Leaderboard } from '../../components/Leaderboard'
+import { GiTestTubes, GiRunningNinja, GiRollingDices, GiFinishLine, GiTrophy } from 'react-icons/gi'
 
 export function GMMadScientistsPage() {
   const { challenges, scores, subscribeToAll, subscribeToChallenge } = useChallengeStore()
@@ -96,7 +97,7 @@ export function GMMadScientistsPage() {
       await supabase.from('notifications').insert({
         player_id: p.id,
         type: 'challenge_update' as const,
-        title: `🧪 Manche ${newRound}`,
+        title: `Manche ${newRound}`,
         message: 'Les rôles ont été distribués ! Regarde ton rôle.',
       })
     }
@@ -133,7 +134,7 @@ export function GMMadScientistsPage() {
     <div className="min-h-screen bg-village-night p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🧪 Savants Fous (MJ)</h1>
+          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide"><GiTestTubes className="inline" /> Savants Fous (MJ)</h1>
           <Link to="/gm/challenges" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Challenges</Link>
         </div>
 
@@ -197,7 +198,7 @@ export function GMMadScientistsPage() {
                   disabled={isAssigning}
                   className="w-full bg-purple-600 text-white py-2.5 rounded-lg font-cinzel font-semibold hover:bg-purple-500 transition-colors disabled:opacity-40"
                 >
-                  {isAssigning ? 'Attribution...' : `🎲 Assigner les rôles (Manche ${currentRound + 1})`}
+                  {isAssigning ? 'Attribution...' : <><GiRollingDices className="inline" /> Assigner les rôles (Manche {currentRound + 1})</>}
                 </button>
 
                 {currentRound > 0 && (
@@ -206,13 +207,13 @@ export function GMMadScientistsPage() {
                       onClick={() => handleSetWinner('scientist')}
                       className="bg-purple-600/20 border border-purple-500/30 text-purple-300 py-2 rounded-lg text-sm font-cinzel hover:bg-purple-600/30 transition-colors"
                     >
-                      🧪 Savants gagnent
+                      <GiTestTubes className="inline" /> Savants gagnent
                     </button>
                     <button
                       onClick={() => handleSetWinner('citizen')}
                       className="bg-candle-600/20 border border-candle-500/30 text-candle-400 py-2 rounded-lg text-sm font-cinzel hover:bg-candle-500/30 transition-colors"
                     >
-                      🏃 Citoyens gagnent
+                      <GiRunningNinja className="inline" /> Citoyens gagnent
                     </button>
                   </div>
                 )}
@@ -222,7 +223,7 @@ export function GMMadScientistsPage() {
                     onClick={handleEndChallenge}
                     className="w-full bg-night-700 border border-night-600 text-moon-400 py-2 rounded-lg font-crimson hover:bg-night-600 transition-colors"
                   >
-                    🏁 Terminer le challenge
+                    <GiFinishLine className="inline" /> Terminer le challenge
                   </button>
                 )}
               </div>
@@ -241,10 +242,10 @@ export function GMMadScientistsPage() {
                       const role = (s.metadata as Record<string, unknown>)?.mad_role as string
                       return (
                         <div key={s.id} className={`p-2 rounded-lg border text-xs font-crimson ${role === 'scientist'
-                            ? 'bg-purple-900/20 border-purple-500/20 text-purple-300'
-                            : 'bg-candle-600/10 border-candle-500/20 text-candle-400'
+                          ? 'bg-purple-900/20 border-purple-500/20 text-purple-300'
+                          : 'bg-candle-600/10 border-candle-500/20 text-candle-400'
                           }`}>
-                          {role === 'scientist' ? '🧪' : '🏃'} {players.find(p => p.id === s.player_id)?.name ?? '?'}
+                          {role === 'scientist' ? <GiTestTubes className="inline" /> : <GiRunningNinja className="inline" />} {players.find(p => p.id === s.player_id)?.name ?? '?'}
                         </div>
                       )
                     })}
@@ -258,7 +259,7 @@ export function GMMadScientistsPage() {
 
         {challenge?.status === 'completed' && (
           <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🏆</div>
+            <div className="text-4xl mb-2"><GiTrophy className="inline text-4xl" /></div>
             <p className="font-cinzel text-candle-400 font-bold text-lg">Challenge terminé !</p>
             <Leaderboard scores={leaderboardScores} title="Classement final" className="mt-4" />
           </div>

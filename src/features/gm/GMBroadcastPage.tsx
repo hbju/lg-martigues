@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
+import { GiGhost } from 'react-icons/gi'
+import { RiMegaphoneFill, RiTeamFill, RiHeartFill, RiCheckboxCircleFill } from 'react-icons/ri'
 
 type TargetGroup = 'all' | 'alive' | 'ghosts'
 
@@ -51,7 +53,7 @@ export function GMBroadcastPage() {
         <div className="min-h-screen bg-village-night p-6">
             <div className="max-w-2xl mx-auto">
                 <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-6">
-                    📢 Annonce
+                    <RiMegaphoneFill className="inline" /> Annonce
                 </h1>
 
                 <div className="bg-parchment-card rounded-xl p-5 backdrop-blur-sm">
@@ -86,11 +88,11 @@ export function GMBroadcastPage() {
                                         key={group}
                                         onClick={() => { setTargetGroup(group); setSpecificPlayerId('') }}
                                         className={`px-3 py-1.5 rounded-lg text-sm font-crimson transition-colors border ${targetGroup === group && !specificPlayerId
-                                                ? 'bg-candle-500/20 border-candle-500/50 text-candle-400'
-                                                : 'bg-night-800 border-night-600 text-moon-400 hover:bg-night-700'
+                                            ? 'bg-candle-500/20 border-candle-500/50 text-candle-400'
+                                            : 'bg-night-800 border-night-600 text-moon-400 hover:bg-night-700'
                                             }`}
                                     >
-                                        {group === 'all' ? '👥 Tous' : group === 'alive' ? '❤️ Vivants' : '👻 Fantômes'}
+                                        {group === 'all' ? <><RiTeamFill className="inline" /> Tous</> : group === 'alive' ? <><RiHeartFill className="inline" /> Vivants</> : <><GiGhost className="inline" /> Fantômes</>}
                                     </button>
                                 ))}
                             </div>
@@ -112,7 +114,7 @@ export function GMBroadcastPage() {
 
                         {sent && (
                             <div className="bg-forest-800/30 border border-green-700/30 rounded-lg p-3 text-center">
-                                <p className="text-green-400 font-crimson text-sm">✅ Annonce envoyée !</p>
+                                <p className="text-green-400 font-crimson text-sm"><RiCheckboxCircleFill className="inline" /> Annonce envoyée !</p>
                             </div>
                         )}
 
@@ -121,7 +123,7 @@ export function GMBroadcastPage() {
                             disabled={isSending || !title.trim() || !message.trim()}
                             className="w-full bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 disabled:from-night-700 disabled:to-night-700 disabled:text-night-600 text-night-950 font-cinzel font-semibold py-3 rounded-lg transition-all shadow-lg shadow-candle-500/20"
                         >
-                            {isSending ? 'Envoi...' : '📢 Envoyer l\'annonce'}
+                            {isSending ? 'Envoi...' : <><RiMegaphoneFill className="inline" /> Envoyer l'annonce</>}
                         </button>
                     </div>
                 </div>

@@ -6,6 +6,8 @@ import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { useGameStore } from '../../stores/gameStore'
 import { CountdownTimer } from '../../components/ui/CountdownTimer'
 import type { VoteRound, Vote, Elimination } from '../../types/supabase'
+import { GiWolfHead, GiBloodySword, GiRollingDices, GiDeathSkull } from 'react-icons/gi'
+import { RiLockFill, RiAlarmWarningFill } from 'react-icons/ri'
 
 export function GMMurderPage() {
     const { player } = useAuthStore()
@@ -261,7 +263,7 @@ export function GMMurderPage() {
         <div className="min-h-screen bg-village-night p-6">
             <div className="max-w-2xl mx-auto">
                 <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-6">
-                    🐺 Gestion des Meurtres
+                    <GiWolfHead className="inline" /> Gestion des Meurtres
                 </h1>
 
                 {/* Werewolf info */}
@@ -270,7 +272,7 @@ export function GMMurderPage() {
                     <div className="flex flex-wrap gap-2">
                         {aliveWerewolves.map(w => (
                             <span key={w.id} className="bg-blood-800/40 text-red-300 px-2 py-1 rounded font-crimson text-sm border border-blood-500/30">
-                                🐺 {w.name}
+                                <GiWolfHead className="inline" /> {w.name}
                             </span>
                         ))}
                     </div>
@@ -319,7 +321,7 @@ export function GMMurderPage() {
 
                         {timerExpired && (
                             <div className="bg-blood-800/60 border border-blood-500/50 rounded-lg p-3 mb-4 text-center">
-                                <p className="text-red-300 font-crimson font-semibold">⏰ Temps écoulé — Ferme la chasse !</p>
+                                <p className="text-red-300 font-crimson font-semibold"><RiAlarmWarningFill className="inline" /> Temps écoulé — Ferme la chasse !</p>
                             </div>
                         )}
 
@@ -328,7 +330,7 @@ export function GMMurderPage() {
                             disabled={isResolving}
                             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isResolving ? 'Résolution...' : '🔒 Fermer et résoudre le meurtre'}
+                            {isResolving ? 'Résolution...' : <><RiLockFill className="inline" /> Fermer et résoudre le meurtre</>}
                         </button>
                     </div>
                 ) : (
@@ -354,7 +356,7 @@ export function GMMurderPage() {
                             disabled={isCreating}
                             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isCreating ? 'Ouverture...' : '🐺 Ouvrir la fenêtre de meurtre'}
+                            {isCreating ? 'Ouverture...' : <><GiWolfHead className="inline" /> Ouvrir la fenêtre de meurtre</>}
                         </button>
                     </div>
                 )}
@@ -369,14 +371,14 @@ export function GMMurderPage() {
                             Victime : <span className="text-red-400 font-semibold">{getPlayerName(pendingElimination.player_id)}</span>
                         </p>
                         <p className="font-crimson text-moon-400 text-sm mb-4">
-                            Méthode : {pendingElimination.method === 'murdered' ? '🔪 Meurtre unanime' : '🎲 Élimination aléatoire (désaccord)'}
+                            Méthode : {pendingElimination.method === 'murdered' ? <><GiBloodySword className="inline" /> Meurtre unanime</> : <><GiRollingDices className="inline" /> Élimination aléatoire (désaccord)</>}
                         </p>
                         <button
                             onClick={handleConfirmMurder}
                             disabled={isConfirming}
                             className="w-full bg-gradient-to-b from-blood-500 to-blood-700 hover:from-blood-500/90 hover:to-blood-600 text-parchment-100 font-cinzel font-semibold py-3 rounded-lg transition-all"
                         >
-                            {isConfirming ? 'Confirmation...' : '💀 Confirmer le meurtre'}
+                            {isConfirming ? 'Confirmation...' : <><GiDeathSkull className="inline" /> Confirmer le meurtre</>}
                         </button>
                     </div>
                 )}
@@ -385,7 +387,7 @@ export function GMMurderPage() {
                 {lastResult && (
                     <div className="bg-night-800/50 border border-night-700/30 rounded-xl p-4">
                         <p className="font-crimson text-moon-400 text-sm">
-                            Dernier résultat : {lastResult.method === 'murdered' ? '🔪 Meurtre unanime' : '🎲 Élimination aléatoire'} — {lastResult.targetName}
+                            Dernier résultat : {lastResult.method === 'murdered' ? <><GiBloodySword className="inline" /> Meurtre unanime</> : <><GiRollingDices className="inline" /> Élimination aléatoire</>} — {lastResult.targetName}
                         </p>
                     </div>
                 )}

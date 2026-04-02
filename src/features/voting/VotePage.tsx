@@ -3,6 +3,8 @@ import { useAuthStore } from '../../stores/authStore'
 import { useVoteStore, getVoteProgress } from '../../stores/voteStore'
 import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import { CountdownTimer } from '../../components/ui/CountdownTimer'
+import { GiVote } from 'react-icons/gi'
+import { RiCheckboxCircleFill, RiErrorWarningFill } from 'react-icons/ri'
 
 export function VotePage() {
     const { player } = useAuthStore()
@@ -35,7 +37,7 @@ export function VotePage() {
     if (!currentRound || (currentRound.type !== 'council' && currentRound.type !== 'final') || currentRound.metadata?.subtype === 'continue_poll') {
         return (
             <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-                <div className="text-4xl mb-4">🗳️</div>
+                <div className="text-4xl mb-4"><GiVote /></div>
                 <p className="font-cinzel text-parchment-200 text-xl mb-2">Aucun vote en cours</p>
                 <p className="font-crimson text-moon-400 italic text-center">
                     Retourne au village et attends l'appel du Maître du Jeu.
@@ -48,7 +50,7 @@ export function VotePage() {
     if (progress.hasCurrentPlayerVoted) {
         return (
             <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-                <div className="text-4xl mb-4">✅</div>
+                <div className="text-4xl mb-4"><RiCheckboxCircleFill /></div>
                 <p className="font-cinzel text-parchment-200 text-xl mb-2">Vote enregistré</p>
                 <p className="font-crimson text-moon-400 italic text-center mb-6">
                     En attente des autres villageois...
@@ -96,7 +98,7 @@ export function VotePage() {
             <div className="max-w-md mx-auto">
                 {/* Header */}
                 <div className="text-center mb-6">
-                    <div className="text-3xl mb-2">🗳️</div>
+                    <div className="text-3xl mb-2"><GiVote /></div>
                     <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">
                         Conseil du Village
                     </h1>
@@ -167,7 +169,7 @@ export function VotePage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70">
                     <div className="bg-night-800 border border-night-600 rounded-xl p-6 max-w-sm w-full">
                         <div className="text-center">
-                            <div className="text-3xl mb-3">⚠️</div>
+                            <div className="text-3xl mb-3"><RiErrorWarningFill /></div>
                             <h2 className="font-cinzel text-parchment-100 text-lg font-semibold mb-2">
                                 Confirmer ton vote
                             </h2>

@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useChallengeStore } from '../../stores/challengeStore'
+import { GiBeerStein, GiCrosshair } from 'react-icons/gi'
+import { RiMapPinFill, RiTeamFill, RiQuestionFill } from 'react-icons/ri'
 
 interface BarStop {
   bar: string
@@ -62,7 +64,7 @@ export function PubCrawlPage() {
   if (!challenge) {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-        <div className="text-5xl mb-4">🍻</div>
+        <div className="text-5xl mb-4"><GiBeerStein /></div>
         <p className="font-cinzel text-parchment-100 text-xl mb-2">Pub Crawl</p>
         <p className="font-crimson text-moon-400 italic">Le pub crawl n'a pas encore été créé par le MJ.</p>
         <button onClick={() => navigate('/home')} className="mt-4 text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Retour</button>
@@ -73,7 +75,7 @@ export function PubCrawlPage() {
   if (!myTeam) {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6">
-        <div className="text-5xl mb-4">🍻</div>
+        <div className="text-5xl mb-4"><GiBeerStein /></div>
         <p className="font-cinzel text-parchment-100 text-xl mb-2">Pub Crawl</p>
         <p className="font-crimson text-moon-400 italic">Tu n'as pas encore été assigné à une équipe. Le MJ s'en occupe !</p>
         <button onClick={() => navigate('/home')} className="mt-4 text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Retour</button>
@@ -86,7 +88,7 @@ export function PubCrawlPage() {
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🍻 Pub Crawl</h1>
+            <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide inline-flex items-center gap-2"><GiBeerStein /> Pub Crawl</h1>
             <p className="font-crimson text-candle-400 text-sm">Équipe : {myTeam.name}</p>
           </div>
           <button onClick={() => navigate('/home')} className="text-moon-400 hover:text-parchment-200 font-crimson text-sm">← Retour</button>
@@ -141,12 +143,12 @@ export function PubCrawlPage() {
                           rel="noopener noreferrer"
                           className="font-crimson text-moon-400/60 text-xs underline hover:text-candle-400"
                         >
-                          📍 {stop.address}
+                          <RiMapPinFill className="inline" /> {stop.address}
                         </a>
                       )}
                       {stop.meets_team && (
                         <p className="font-crimson text-moon-400 text-xs mt-1">
-                          🤝 Rencontre : <strong>{getTeamName(stop.meets_team)}</strong>
+                          <RiTeamFill className="inline" /> Rencontre : <strong>{getTeamName(stop.meets_team)}</strong>
                         </p>
                       )}
                     </div>
@@ -160,7 +162,7 @@ export function PubCrawlPage() {
         {/* Final destination */}
         {destinationRevealed ? (
           <div className="bg-candle-600/20 border border-candle-500/40 rounded-xl p-4 text-center">
-            <div className="text-3xl mb-2">🎯</div>
+            <div className="text-3xl mb-2"><GiCrosshair /></div>
             <p className="font-cinzel text-candle-400 font-bold text-lg mb-1">Destination finale débloquée !</p>
             <p className="font-crimson text-parchment-200">
               {finalDestination ?? (challenge.metadata as Record<string, unknown>)?.final_destination_name as string ?? 'Rendez-vous communiqué par le MJ'}
@@ -168,7 +170,7 @@ export function PubCrawlPage() {
           </div>
         ) : (
           <div className="bg-night-800/30 border border-night-700/30 border-dashed rounded-xl p-4 text-center">
-            <div className="text-2xl mb-2 opacity-40">❓</div>
+            <div className="text-2xl mb-2 opacity-40"><RiQuestionFill /></div>
             <p className="font-crimson text-moon-400/50 text-sm italic">
               Gagne des challenges pour débloquer la destination finale.
             </p>

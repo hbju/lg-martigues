@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
+import { GiGhost } from 'react-icons/gi'
 
 /**
  * Blocks ghost players from accessing vote/werewolf routes.
@@ -23,7 +24,7 @@ export function GhostGuard({ children }: { children: React.ReactNode }) {
   if (player.status === 'ghost') {
     return (
       <div className="min-h-screen bg-village-night flex flex-col items-center justify-center p-6 ghost-mode">
-        <div className="text-5xl mb-4 opacity-60">👻</div>
+        <div className="text-5xl mb-4 opacity-60"><GiGhost className="inline text-5xl" /></div>
         <p className="font-cinzel text-moon-400/60 text-xl text-center tracking-wide">
           Les morts observent, mais ne parlent pas.
         </p>

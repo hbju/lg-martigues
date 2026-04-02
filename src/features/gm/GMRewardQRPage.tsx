@@ -6,6 +6,8 @@ import { useRealtimePlayers } from '../../hooks/useRealtimePlayers'
 import type { QrCode } from '../../types/supabase'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
+import { GiCheckedShield, GiCrystalBall } from 'react-icons/gi'
+import { RiGiftFill, RiHourglassFill, RiFileTextFill, RiClipboardFill, RiPrinterFill, RiCheckboxCircleFill, RiCloseCircleFill, RiQrCodeFill } from 'react-icons/ri'
 
 const APP_URL = import.meta.env.VITE_APP_URL || window.location.origin
 
@@ -56,6 +58,8 @@ export function GMRewardQRPage() {
       reward_type: newRewardType,
     })
 
+    console.log('Created new reward QR code:', { code, label: newLabel.trim(), reward_type: newRewardType })
+
     setNewLabel('')
     setIsCreating(false)
   }
@@ -88,7 +92,7 @@ export function GMRewardQRPage() {
       granted_by_gm: true,
     })
 
-    const typeLabel = qr.reward_type === 'shield' ? '🛡️ Bouclier' : '🔮 Clairvoyance'
+    const typeLabel = qr.reward_type === 'shield' ? 'Bouclier' : 'Clairvoyance'
     await supabase.from('notifications').insert({
       player_id: qr.scanned_by,
       type: qr.reward_type === 'shield' ? 'shield_gained' as const : 'clairvoyance_gained' as const,
@@ -258,27 +262,27 @@ export function GMRewardQRPage() {
     <div className="min-h-screen bg-village-night p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide">🎁 QR Récompenses</h1>
+          <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide inline-flex items-center gap-2"><RiGiftFill /> QR Récompenses</h1>
           <div className="flex items-center gap-3">
             <button
               onClick={handleDownloadRewardPdf}
               disabled={isGeneratingPdf || unscanned.length === 0}
               className="bg-candle-500 text-night-950 px-3 py-2 rounded-lg font-cinzel font-semibold text-sm hover:bg-candle-400 transition-colors disabled:opacity-40 print:hidden"
             >
-              {isGeneratingPdf ? '⏳...' : '📄 PDF QR'}
+              {isGeneratingPdf ? <><RiHourglassFill className="inline" />...</> : <><RiFileTextFill className="inline" /> PDF QR</>}
             </button>
             <button
               onClick={handleDownloadCheatSheet}
               disabled={isGeneratingCheatSheet || qrCodes.length === 0}
               className="bg-night-700 text-parchment-200 px-3 py-2 rounded-lg font-crimson text-sm hover:bg-night-600 transition-colors border border-night-600 disabled:opacity-40 print:hidden"
             >
-              {isGeneratingCheatSheet ? '⏳...' : '📋 Aide-mémoire MJ'}
+              {isGeneratingCheatSheet ? <><RiHourglassFill className="inline" />...</> : <><RiClipboardFill className="inline" /> Aide-mémoire MJ</>}
             </button>
             <button
               onClick={() => window.print()}
               className="bg-night-700 hover:bg-night-600 text-parchment-200 py-2 px-4 rounded-lg transition-colors print:hidden font-crimson border border-night-600"
             >
-              🖨️ Imprimer
+              <RiPrinterFill className="inline" /> Imprimer
             </button>
             <Link to="/gm" className="text-moon-400 hover:text-parchment-200 font-crimson text-sm print:hidden">← Dashboard</Link>
           </div>
@@ -307,8 +311,8 @@ export function GMRewardQRPage() {
                 onChange={e => setNewRewardType(e.target.value as 'shield' | 'clairvoyance')}
                 className="bg-night-800 text-parchment-200 rounded-lg px-3 py-2 border border-night-600 focus:border-candle-500 focus:outline-none font-crimson"
               >
-                <option value="shield">🛡️ Bouclier</option>
-                <option value="clairvoyance">🔮 Clairvoyance</option>
+                <option value="shield">Bouclier</option>
+                <option value="clairvoyance">Clairvoyance</option>
               </select>
             </div>
             <button
@@ -332,7 +336,7 @@ export function GMRewardQRPage() {
         {pendingScans.length > 0 && (
           <div className="bg-candle-600/10 border border-candle-500/20 rounded-xl p-4 mb-6 print:hidden">
             <h2 className="font-cinzel text-candle-400 font-semibold text-sm tracking-wider uppercase mb-3">
-              ⏳ Scans en attente ({pendingScans.length})
+              <RiHourglassFill className="inline" /> Scans en attente ({pendingScans.length})
             </h2>
             <div className="space-y-3">
               {pendingScans.map(q => (
@@ -342,7 +346,7 @@ export function GMRewardQRPage() {
                       <strong>{getPlayerName(q.scanned_by)}</strong> a scanné <em className="text-moon-400">{q.label}</em>
                     </p>
                     <p className="font-crimson text-moon-400/60 text-xs">
-                      {q.reward_type === 'shield' ? '🛡️ Bouclier' : '🔮 Clairvoyance'}
+                      {q.reward_type === 'shield' ? <><GiCheckedShield className="inline" /> Bouclier</> : <><GiCrystalBall className="inline" /> Clairvoyance</>}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -350,13 +354,13 @@ export function GMRewardQRPage() {
                       onClick={() => handleApprove(q)}
                       className="bg-candle-500 text-night-950 px-3 py-1.5 rounded-lg text-xs font-cinzel hover:bg-candle-400 transition-colors"
                     >
-                      ✅ Approuver
+                      <RiCheckboxCircleFill className="inline" /> Approuver
                     </button>
                     <button
                       onClick={() => handleReject(q)}
                       className="bg-night-700 text-moon-400 px-3 py-1.5 rounded-lg text-xs font-crimson hover:bg-night-600 transition-colors border border-night-600"
                     >
-                      ❌ Rejeter
+                      <RiCloseCircleFill className="inline" /> Rejeter
                     </button>
                   </div>
                 </div>
@@ -381,7 +385,7 @@ export function GMRewardQRPage() {
         {unscanned.length > 0 && (
           <div className="mb-6">
             <h2 className="font-cinzel text-parchment-100 font-semibold text-sm tracking-wider uppercase mb-3 print:hidden">
-              📇 QR codes à imprimer ({unscanned.length})
+              <RiQrCodeFill className="inline" /> QR codes à imprimer ({unscanned.length})
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 print:grid-cols-3 print:gap-4">
               {unscanned.map(q => {
@@ -393,7 +397,7 @@ export function GMRewardQRPage() {
                   >
                     <QRCodeSVG value={scanUrl} size={160} level="M" />
                     <p className="text-night-950 font-cinzel font-bold text-sm tracking-wide text-center">
-                      {q.reward_type === 'shield' ? '🛡️' : '🔮'} Récompense
+                      {q.reward_type === 'shield' ? <GiCheckedShield className="inline" /> : <GiCrystalBall className="inline" />} Récompense
                     </p>
                     {/* Label only visible to GM (not when printed for players) */}
                     <p className="text-parchment-300 text-xs font-crimson italic print:hidden">{q.label}</p>
@@ -414,7 +418,7 @@ export function GMRewardQRPage() {
         {confirmed.length > 0 && (
           <div className="bg-parchment-card rounded-xl p-4 backdrop-blur-sm print:hidden">
             <h2 className="font-cinzel text-parchment-100 font-semibold text-sm tracking-wider uppercase mb-3">
-              ✅ QR confirmés ({confirmed.length})
+              <RiCheckboxCircleFill className="inline" /> QR confirmés ({confirmed.length})
             </h2>
             <div className="space-y-2">
               {confirmed.map(q => (
@@ -422,7 +426,7 @@ export function GMRewardQRPage() {
                   <div>
                     <p className="font-crimson text-parchment-200 text-sm">{q.label}</p>
                     <p className="font-crimson text-moon-400/50 text-xs">
-                      Scanné par {getPlayerName(q.scanned_by)} — {q.reward_type === 'shield' ? '🛡️' : '🔮'}
+                      Scanné par {getPlayerName(q.scanned_by)} — {q.reward_type === 'shield' ? <GiCheckedShield className="inline" /> : <GiCrystalBall className="inline" />}
                     </p>
                   </div>
                 </div>

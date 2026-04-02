@@ -1,5 +1,7 @@
 import { Component, type ReactNode } from 'react'
 import { supabase } from '../../lib/supabase'
+import { GiWolfHead } from 'react-icons/gi'
+import { RiRefreshLine } from 'react-icons/ri'
 
 interface Props {
   children: ReactNode
@@ -39,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-6">
-          <div className="text-6xl mb-6">🐺</div>
+          <div className="text-6xl mb-6"><GiWolfHead className="inline text-6xl" /></div>
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-3">
             Quelque chose s'est mal passé
           </h1>
@@ -50,7 +52,7 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={this.handleReload}
             className="bg-gradient-to-b from-candle-500 to-candle-600 hover:from-candle-400 hover:to-candle-500 text-night-950 font-cinzel font-semibold py-3 px-8 rounded-lg transition-all shadow-lg shadow-candle-500/20"
           >
-            🔄 Recharger
+            <RiRefreshLine className="inline" /> Recharger
           </button>
         </div>
       )
