@@ -44,8 +44,8 @@ export function GMChecklistPage() {
 
   const items: ChecklistItem[] = [
     {
-      label: `16 comptes joueurs créés (${nonGmPlayers.length}/16)`,
-      checked: nonGmPlayers.length >= 16,
+      label: `17 comptes joueurs créés (${nonGmPlayers.length}/17)`,
+      checked: nonGmPlayers.length >= 17,
       link: '/gm/qr-codes',
     },
     {

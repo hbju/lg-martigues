@@ -253,14 +253,6 @@ export function GMVotesPage() {
             await supabase.from('game_state').update(updates).eq('id', 1)
         }
 
-        // Notify eliminated player
-        await supabase.from('notifications').insert({
-            player_id: pendingElimination.player_id,
-            type: 'eliminated' as const,
-            title: 'Éliminé',
-            message: 'Tu as été éliminé par le conseil du village.',
-        })
-
         // Notify all players
         if (eliminatedPlayer) {
             const notifs = players

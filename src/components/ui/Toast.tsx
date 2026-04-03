@@ -46,7 +46,7 @@ export function Toast({ notification, onDismiss, onTap }: ToastProps) {
         >
             <div className="bg-night-800/95 border border-candle-500/30 rounded-xl p-4 backdrop-blur-sm shadow-lg shadow-black/30 max-w-md mx-auto">
                 <div className="flex items-start gap-3">
-                    <span className="text-xl flex-shrink-0">{typeIcons[notification.type] ?? <RiMegaphoneFill />}</span>
+                    <span className="flex justify-center text-xl flex-shrink-0">{typeIcons[notification.type] ?? <RiMegaphoneFill />}</span>
                     <div className="flex-1 min-w-0">
                         <p className="font-cinzel text-parchment-100 text-sm font-semibold tracking-wide">
                             {notification.title}

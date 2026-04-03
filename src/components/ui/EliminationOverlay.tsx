@@ -28,7 +28,7 @@ export function EliminationOverlay({ method, onDismiss }: EliminationOverlayProp
         return (
             <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-6 bg-night-950/95">
                 <div className="text-center animate-fade-in-up">
-                    <div className="text-5xl mb-4"><GiGhost /></div>
+                    <div className="flex justify-center text-5xl mb-4"><GiGhost /></div>
                     <p className="font-crimson text-moon-400 text-lg mb-2 italic">
                         Tu peux choisir de révéler ton rôle aux autres joueurs.
                     </p>
@@ -49,7 +49,7 @@ export function EliminationOverlay({ method, onDismiss }: EliminationOverlayProp
     return (
         <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-6 bg-night-950/95">
             <div className="text-center animate-fade-in-up">
-                <div className="text-6xl mb-6">{msg.icon}</div>
+                <div className="flex justify-center text-6xl mb-6">{msg.icon}</div>
                 <h1 className="font-cinzel text-3xl font-bold text-red-400 tracking-wide mb-3">
                     {msg.title}
                 </h1>

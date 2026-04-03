@@ -128,7 +128,7 @@ Une fois déployé avec une base Supabase propre :
 
 ### Enveloppe de secours ("BREAK GLASS")
 Prépare une enveloppe scellée contenant :
-- [ ] 16 cartes rôles imprimées (13 Villageois, 3 Loups-Garous)
+- [ ] 17 cartes rôles imprimées (13 Villageois, 3 Loups-Garous)
 - [ ] Une grille de vote papier (votant × cible)
 - [ ] Un stylo + papier pour tracker les éliminations
 - [ ] Les instructions pour passer en mode "papier" si l'app plante

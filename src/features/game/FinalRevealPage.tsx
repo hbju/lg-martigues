@@ -118,7 +118,7 @@ export function FinalRevealPage() {
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.3 }}
                     >
-                      <span className="text-2xl">
+                      <span className="flex justify-center text-2xl">
                         {p.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}
                       </span>
                       <p className={`font-crimson text-sm mt-1 ${p.role === 'werewolf' ? 'text-red-400' : 'text-candle-400'

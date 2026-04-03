@@ -51,7 +51,7 @@ export function GMHealthPage() {
     // Player counts
     results.push({
       label: 'Joueurs',
-      status: players.length >= 16 ? 'ok' : 'warning',
+      status: players.length >= 17 ? 'ok' : 'warning',
       detail: `${players.length} total — ${alive.length} vivants, ${ghosts.length} fantômes`,
     })
 

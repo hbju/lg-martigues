@@ -1,5 +1,5 @@
 -- Migration: Create challenges, challenge_scores, teams, team_members tables
-CREATE TYPE challenge_type AS ENUM ('beer_pong', 'pub_crawl', 'mad_scientists');
+CREATE TYPE challenge_type AS ENUM ('beer_pong', 'mad_scientists');
 CREATE TYPE challenge_status AS ENUM ('upcoming', 'active', 'completed');
 
 CREATE TABLE challenges (

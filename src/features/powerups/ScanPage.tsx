@@ -132,7 +132,7 @@ export function ScanPage() {
 
         {status === 'no_code' && !showScanner && (
           <div>
-            <div className="text-5xl mb-4"><RiCameraFill /></div>
+            <div className="flex justify-center text-5xl mb-4"><RiCameraFill /></div>
             <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-4">
               Scanner un QR
             </h1>

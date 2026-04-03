@@ -138,14 +138,14 @@ export function GMDashboardPage() {
               to="/gm/votes"
               className="bg-candle-600/20 border border-candle-500/30 rounded-xl p-4 text-center hover:bg-candle-600/30 transition-colors"
             >
-              <div className="text-2xl mb-1"><GiVote /></div>
+              <div className="flex justify-center text-2xl mb-1"><GiVote /></div>
               <p className="font-cinzel text-candle-400 text-sm font-semibold">Votes</p>
             </Link>
             <Link
               to="/gm/murder"
               className="bg-blood-800/20 border border-blood-500/30 rounded-xl p-4 text-center hover:bg-blood-800/30 transition-colors"
             >
-              <div className="text-2xl mb-1"><GiWolfHead /></div>
+              <div className="flex justify-center text-2xl mb-1"><GiWolfHead /></div>
               <p className="font-cinzel text-red-400 text-sm font-semibold">Meurtres</p>
             </Link>
             <Link
@@ -155,7 +155,7 @@ export function GMDashboardPage() {
                 : 'bg-night-800/30 border-night-700/30 hover:bg-night-800/40'
                 }`}
             >
-              <div className="text-2xl mb-1"><GiBiohazard /></div>
+              <div className="flex justify-center text-2xl mb-1"><GiBiohazard /></div>
               <p className={`font-cinzel text-sm font-semibold ${infectionPending ? 'text-red-400' : 'text-moon-400'}`}>
                 Infection {infectionPending && <RiErrorWarningFill className="inline" />}
               </p>
@@ -164,7 +164,7 @@ export function GMDashboardPage() {
               to="/gm/broadcast"
               className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
             >
-              <div className="text-2xl mb-1"><RiMegaphoneFill /></div>
+              <div className="flex justify-center text-2xl mb-1"><RiMegaphoneFill /></div>
               <p className="font-cinzel text-moon-400 text-sm font-semibold">Annonce</p>
             </Link>
           </div>
@@ -176,42 +176,42 @@ export function GMDashboardPage() {
             to="/gm/power-ups"
             className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 text-center hover:bg-purple-900/30 transition-colors"
           >
-            <div className="text-2xl mb-1"><GiCheckedShield /></div>
+            <div className="flex justify-center text-2xl mb-1"><GiCheckedShield /></div>
             <p className="font-cinzel text-purple-400 text-sm font-semibold">Power-ups</p>
           </Link>
           <Link
             to="/gm/reward-qr"
             className="bg-candle-600/10 border border-candle-500/20 rounded-xl p-4 text-center hover:bg-candle-600/20 transition-colors"
           >
-            <div className="text-2xl mb-1"><RiGiftFill /></div>
+            <div className="flex justify-center text-2xl mb-1"><RiGiftFill /></div>
             <p className="font-cinzel text-candle-400 text-sm font-semibold">QR Rewards</p>
           </Link>
           <Link
             to="/gm/challenges"
             className="bg-forest-700/20 border border-green-800/30 rounded-xl p-4 text-center hover:bg-forest-700/30 transition-colors"
           >
-            <div className="text-2xl mb-1"><GiTrophy /></div>
+            <div className="flex justify-center text-2xl mb-1"><GiTrophy /></div>
             <p className="font-cinzel text-green-400 text-sm font-semibold">Challenges</p>
           </Link>
           <Link
             to="/tv"
             className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
           >
-            <div className="text-2xl mb-1"><RiTvFill /></div>
+            <div className="flex justify-center text-2xl mb-1"><RiTvFill /></div>
             <p className="font-cinzel text-moon-400 text-sm font-semibold">TV View</p>
           </Link>
           <Link
             to="/gm/checklist"
             className="bg-forest-700/10 border border-green-800/20 rounded-xl p-4 text-center hover:bg-forest-700/20 transition-colors"
           >
-            <div className="text-2xl mb-1"><RiCheckboxCircleFill /></div>
+            <div className="flex justify-center text-2xl mb-1"><RiCheckboxCircleFill /></div>
             <p className="font-cinzel text-green-400 text-sm font-semibold">Checklist</p>
           </Link>
           <Link
             to="/gm/health"
             className="bg-night-800/30 border border-night-700/30 rounded-xl p-4 text-center hover:bg-night-800/40 transition-colors"
           >
-            <div className="text-2xl mb-1"><GiHealthNormal /></div>
+            <div className="flex justify-center text-2xl mb-1"><GiHealthNormal /></div>
             <p className="font-cinzel text-moon-400 text-sm font-semibold">Diagnostic</p>
           </Link>
         </div>

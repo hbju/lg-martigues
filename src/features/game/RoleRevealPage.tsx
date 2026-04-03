@@ -40,7 +40,7 @@ export function RoleRevealPage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-moon-200/5 blur-3xl" />
 
         <div className="text-center animate-candle relative z-10">
-          <p className="text-moon-300/60 text-4xl mb-6"><GiEclipse /></p>
+          <p className="flex justify-center text-moon-300/60 text-4xl mb-6"><GiEclipse /></p>
           <p className="font-cinzel text-parchment-200/80 text-2xl tracking-wide">
             Ton destin est en train
           </p>

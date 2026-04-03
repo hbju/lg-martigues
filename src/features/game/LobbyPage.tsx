@@ -44,7 +44,7 @@ export function LobbyPage() {
       <div className="absolute top-6 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-gradient-to-br from-moon-200 to-moon-300 opacity-15 moon-glow" />
 
       <div className="text-center mb-8 relative z-10">
-        <div className="text-4xl mb-3 animate-slow-pulse"><GiNightSleep /></div>
+        <div className="flex justify-center text-4xl mb-3 animate-slow-pulse"><GiNightSleep /></div>
         <h1 className="font-cinzel text-2xl font-bold text-candle-400 tracking-[0.2em] animate-candle">
           EN ATTENTE D'ALLOCATION
         </h1>

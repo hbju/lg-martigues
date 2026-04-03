@@ -129,7 +129,7 @@ export function HomePage() {
         {/* Role card */}
         <div className="bg-parchment-card rounded-xl p-4 mb-6 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{player.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}</span>
+            <span className="flex justify-center text-2xl">{player.role === 'werewolf' ? <GiWolfHead /> : <GiVillage />}</span>
             <div>
               <p className="font-cinzel text-parchment-100 font-medium tracking-wide">
                 {player.role === 'werewolf' ? 'Loup-Garou' : 'Villageois'}

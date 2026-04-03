@@ -116,12 +116,12 @@ export function InventoryPage() {
         {/* Summary */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-parchment-card rounded-xl p-4 text-center backdrop-blur-sm">
-            <p className="text-3xl mb-1"><GiCheckedShield /></p>
+            <p className="flex justify-center text-3xl mb-1"><GiCheckedShield /></p>
             <p className="text-2xl font-bold text-candle-400 font-cinzel">{unusedShields.length}</p>
             <p className="font-crimson text-moon-400 text-sm">Boucliers</p>
           </div>
           <div className="bg-parchment-card rounded-xl p-4 text-center backdrop-blur-sm">
-            <p className="text-3xl mb-1"><GiCrystalBall /></p>
+            <p className="flex justify-center text-3xl mb-1"><GiCrystalBall /></p>
             <p className="text-2xl font-bold text-purple-400 font-cinzel">{unusedClairvoyances.length}</p>
             <p className="font-crimson text-moon-400 text-sm">Clairvoyances</p>
           </div>

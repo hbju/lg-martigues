@@ -41,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-night-950 flex flex-col items-center justify-center p-6">
-          <div className="text-6xl mb-6"><GiWolfHead className="inline text-6xl" /></div>
+          <div className="flex justify-center text-6xl mb-6"><GiWolfHead className="inline text-6xl" /></div>
           <h1 className="font-cinzel text-2xl font-bold text-parchment-100 tracking-wide mb-3">
             Quelque chose s'est mal passé
           </h1>
