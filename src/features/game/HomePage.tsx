@@ -182,13 +182,8 @@ export function HomePage() {
               </div>
               <div className="h-px bg-night-700/50" />
               <div className="flex justify-between">
-                <span className="text-moon-400">Loups restants</span>
-                <span className="text-red-400">{gameState.werewolf_count}</span>
-              </div>
-              <div className="h-px bg-night-700/50" />
-              <div className="flex justify-between">
                 <span className="text-moon-400">Villageois restants</span>
-                <span className="text-candle-400">{gameState.villager_count}</span>
+                <span className="text-candle-400">{gameState.villager_count + gameState.werewolf_count}</span>
               </div>
             </div>
           </div>
